@@ -60,4 +60,13 @@ public class MarvelRestClient {
         Observable observable = rxInterface.getCharacterList(apikey, timeStamp, hash, name, nameStartsWith, orderBy, limit);
         setupSubscribe(observable, subscriber);
     }
+
+    public void getCharacterIdApi(Subscriber<CharacterInfo> subscriber,
+                                  String characterId,
+                                  String apikey,
+                                  String timeStamp,
+                                  String hash) {
+        Observable observable = rxInterface.getCharacterId(characterId, apikey, timeStamp, hash);
+        setupSubscribe(observable, subscriber);
+    }
 }

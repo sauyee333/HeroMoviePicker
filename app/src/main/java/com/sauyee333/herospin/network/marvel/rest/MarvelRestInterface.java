@@ -22,7 +22,7 @@ public interface MarvelRestInterface {
                                                @Query("limit") String limit);
 
     @GET("characters/{characterId}")
-    Observable<Void> getCharacterId(@Path("characterId") String user,
+    Observable<CharacterInfo> getCharacterId(@Path("characterId") String characterId,
                                     @Query("apikey") String apikey,
                                     @Query("ts") String timeStamp,
                                     @Query("hash") String hash);

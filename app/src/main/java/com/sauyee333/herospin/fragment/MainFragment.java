@@ -30,13 +30,19 @@ public class MainFragment extends Fragment {
         public void onNext(CharacterInfo characterInfo) {
         }
     };
+    private SubscribeOnNextListener onGetCharacterIdNext = new SubscribeOnNextListener<CharacterInfo>() {
+        @Override
+        public void onNext(CharacterInfo characterInfo) {
+        }
+    };
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, view);
         mContext = getContext();
-        getCharacterList();
+//        getCharacterList();
+        getCharacterId();
         return view;
     }
 
@@ -49,6 +55,18 @@ public class MainFragment extends Fragment {
                 timeStamp,
                 hash,
                 null, null, null, null);
+    }
+
+    private void getCharacterId() {
+        String characterId = "1011334";
+        String apiKey = getResources().getString(R.string.marvelPublicKey);
+        String timeStamp = getTimeStamp();
+        String hash = generateHash(timeStamp, getResources().getString(R.string.marvelPrivateKey), apiKey);
+        MarvelRestClient.getInstance().getCharacterIdApi(new ProgressSubscriber<CharacterInfo>(onGetCharacterIdNext, mContext, true, true),
+                characterId,
+                apiKey,
+                timeStamp,
+                hash);
     }
 
     private String getTimeStamp() {
