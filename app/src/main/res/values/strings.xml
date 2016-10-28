@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">HeroSpin</string>
+
+    <!-- marvel keys -->
+    <string name="marvelPublicKey">67048a9b884af212b62f905ad953d5bc</string>
+    <string name="marvelPrivateKey">40c210605c45ac486386d30cd58d744934e959eb</string>
+
+</resources>
