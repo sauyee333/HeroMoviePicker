@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.sauyee333.herospin.R;
 import com.sauyee333.herospin.network.ProgressSubscriber;
 import com.sauyee333.herospin.network.SubscribeOnNextListener;
+import com.sauyee333.herospin.network.marvel.model.characterList.CharacterInfo;
 import com.sauyee333.herospin.network.marvel.rest.MarvelRestClient;
 
 import java.security.MessageDigest;
@@ -24,9 +25,9 @@ import butterknife.ButterKnife;
 
 public class MainFragment extends Fragment {
     private Context mContext;
-    private SubscribeOnNextListener onGetServiceNext = new SubscribeOnNextListener<Void>() {
+    private SubscribeOnNextListener onGetCharacterListNext = new SubscribeOnNextListener<CharacterInfo>() {
         @Override
-        public void onNext(Void a) {
+        public void onNext(CharacterInfo characterInfo) {
         }
     };
 
@@ -41,9 +42,9 @@ public class MainFragment extends Fragment {
 
     private void getCharacterList() {
         String apiKey = getResources().getString(R.string.marvelPublicKey);
-        String timeStamp = "1";
+        String timeStamp = getTimeStamp();
         String hash = generateHash(timeStamp, getResources().getString(R.string.marvelPrivateKey), apiKey);
-        MarvelRestClient.getInstance().getCharacterListApi(new ProgressSubscriber<Void>(onGetServiceNext, mContext, true, true),
+        MarvelRestClient.getInstance().getCharacterListApi(new ProgressSubscriber<CharacterInfo>(onGetCharacterListNext, mContext, true, true),
                 apiKey,
                 timeStamp,
                 hash,

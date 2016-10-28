@@ -1,5 +1,7 @@
 package com.sauyee333.herospin.network.marvel.rest;
 
+import com.sauyee333.herospin.network.marvel.model.characterList.CharacterInfo;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -47,7 +49,7 @@ public class MarvelRestClient {
                 .subscribe(subscriber);
     }
 
-    public void getCharacterListApi(Subscriber<Void> subscriber,
+    public void getCharacterListApi(Subscriber<CharacterInfo> subscriber,
                                     String apikey,
                                     String timeStamp,
                                     String hash,
