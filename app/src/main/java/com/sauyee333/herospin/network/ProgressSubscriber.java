@@ -1,16 +1,9 @@
 package com.sauyee333.herospin.network;
 
 import android.content.Context;
-import android.text.TextUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
-import com.sauyee333.herospin.network.marvel.model.characterList.ErrorParser;
+import com.sauyee333.herospin.utils.ErrorUtility;
 
-import java.io.IOException;
-
-import okhttp3.ResponseBody;
-import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 
 /**
@@ -57,21 +50,7 @@ public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressChan
     public void onError(Throwable throwable) {
         throwable.printStackTrace();
         dismissProgressDialog();
-
-        String errorMsg = "";
-        ResponseBody body = ((HttpException) throwable).response().errorBody();
-        Gson gson = new Gson();
-        TypeAdapter<ErrorParser> adapter = gson.getAdapter
-                (ErrorParser.class);
-        try {
-            ErrorParser errorParser = adapter.fromJson(body.string());
-            errorMsg = errorParser.getCode() + " " + errorParser.getMessage();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (TextUtils.isEmpty(errorMsg)) {
-            errorMsg = throwable.toString();
-        }
+        String errorMsg = ErrorUtility.parseApiError(throwable);
         if (mSubscribeOnNextListener != null) {
             mSubscribeOnNextListener.onError(errorMsg);
         }

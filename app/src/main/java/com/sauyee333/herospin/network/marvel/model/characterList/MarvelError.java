@@ -4,7 +4,7 @@ package com.sauyee333.herospin.network.marvel.model.characterList;
  * Created by sauyee on 29/10/16.
  */
 
-public class ErrorParser {
+public class MarvelError {
     private String message;
 
     private String code;

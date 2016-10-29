@@ -11,6 +11,8 @@ public class MovieInfo {
 
     private String Response;
 
+    private String Error;
+
     public SearchInfo[] getSearch() {
         return Search;
     }
@@ -33,6 +35,14 @@ public class MovieInfo {
 
     public void setResponse(String Response) {
         this.Response = Response;
+    }
+
+    public String getError() {
+        return Error;
+    }
+
+    public void setError(String Error) {
+        this.Error = Error;
     }
 
     @Override

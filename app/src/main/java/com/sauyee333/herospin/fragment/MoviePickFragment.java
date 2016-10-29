@@ -15,11 +15,13 @@ import com.sauyee333.herospin.network.SubscribeOnResponseListener;
 import com.sauyee333.herospin.network.marvel.model.characterList.CharacterInfo;
 import com.sauyee333.herospin.network.marvel.model.characterList.Data;
 import com.sauyee333.herospin.network.marvel.model.characterList.Results;
+import com.sauyee333.herospin.network.marvel.model.characterList.Thumbnail;
 import com.sauyee333.herospin.network.marvel.rest.MarvelRestClient;
 import com.sauyee333.herospin.network.omdb.model.imdb.ImdbInfo;
 import com.sauyee333.herospin.network.omdb.model.searchapi.MovieInfo;
 import com.sauyee333.herospin.network.omdb.model.searchapi.SearchInfo;
 import com.sauyee333.herospin.network.omdb.rest.OmdbRestClient;
+import com.sauyee333.herospin.utils.Constants;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -46,7 +48,6 @@ public class MoviePickFragment extends Fragment {
                 Data data = characterInfo.getData();
                 if (data != null) {
 
-//                    int random = Random.nextInt((max - min) + 1) + min;
                     Results[] results = data.getResults();
                     if (results != null) {
 
@@ -59,14 +60,28 @@ public class MoviePickFragment extends Fragment {
                         } else {
                             mCharacterLimit = results.length;
                             if (mCharacterLimit > 0) {
+                                int chosenIndex = -1;
                                 for (int i = 0; i < mCharacterLimit; i++) {
                                     Results results1 = results[i];
+                                    Thumbnail thumbnail = results1.getThumbnail();
+                                    String imgUrl;
+                                    if (thumbnail != null) {
+                                        imgUrl = generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_PORTRAIT_MEDIUM, thumbnail.getExtension());
+//                                        _Debug("imgUrl: (" + imgUrl + ")");
+
+                                        if(chosenIndex <0 && !imgUrl.contains(getResources().getString(R.string.imageNotAvailable))){
+                                            chosenIndex = i;
+                                        }
+                                    }
 //                                    _Debug(results1.getName() + " " + results1.getDescription());
 //                                    _Debug(results1.getId() + " " + results1.getResourceURI());
                                 }
 //search movie for chosen character
-//                                Results results1 = results[0];
-//                                getMovieList(results1.getName());
+                                if(chosenIndex >= 0) {
+                                    getMovieList(results[chosenIndex].getName());
+                                }else{
+                                    //shows no image error
+                                }
                             } else {
                                 resetCharacterInfo();
                                 //show get character list error
@@ -99,18 +114,25 @@ public class MoviePickFragment extends Fragment {
         @Override
         public void onNext(MovieInfo movieInfo) {
             if (movieInfo != null) {
-                String total = movieInfo.getTotalResults();
-                int totalInt = Integer.parseInt(total);
-                if (totalInt > 0) {
-                    SearchInfo[] searchInfo = movieInfo.getSearch();
-                    SearchInfo searchInfo1 = searchInfo[0];
-                    String imdb = searchInfo1.getImdbID();
-                    if (!TextUtils.isEmpty(imdb)) {
-                        getMovieDetail(imdb);
-                    }
-                } else {
-                    //not found
+                String response = movieInfo.getResponse();
+                if(!TextUtils.isEmpty(response)) {
+                    if (response.equals("False")) {
+                        displayErrorMessage(movieInfo.getError());
+                    } else {
+                        String total = movieInfo.getTotalResults();
+                        int totalInt = Integer.parseInt(total);
+                        if (totalInt > 0) {
+                            SearchInfo[] searchInfo = movieInfo.getSearch();
+                            SearchInfo searchInfo1 = searchInfo[0];
+                            String imdb = searchInfo1.getImdbID();
+                            if (!TextUtils.isEmpty(imdb)) {
+                                getMovieDetail(imdb);
+                            }
+                        } else {
+                            //not found
 //                    search again
+                        }
+                    }
                 }
             }
         }
