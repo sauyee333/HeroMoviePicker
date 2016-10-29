@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import com.sauyee333.herospin.R;
-import com.sauyee333.herospin.fragment.MainFragment;
+import com.sauyee333.herospin.fragment.MoviePickFragment;
 import com.sauyee333.herospin.listener.MainListener;
 
 public class MainActivity extends AppCompatActivity implements MainListener {
@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity implements MainListener {
     }
 
     private void showMainFragment() {
-        Fragment fragment = new MainFragment();
+        Fragment fragment = new MoviePickFragment();
         showFragment(fragment, false);
     }
 

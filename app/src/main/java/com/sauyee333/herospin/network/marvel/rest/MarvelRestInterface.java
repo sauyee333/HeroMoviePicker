@@ -19,7 +19,8 @@ public interface MarvelRestInterface {
                                                @Query("name") String name,
                                                @Query("nameStartsWith") String nameStartsWith,
                                                @Query("orderBy") String orderBy,
-                                               @Query("limit") String limit);
+                                               @Query("limit") String limit,
+                                               @Query("offset") String offset);
 
     @GET("characters/{characterId}")
     Observable<CharacterInfo> getCharacterId(@Path("characterId") String characterId,

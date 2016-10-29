@@ -1,10 +1,10 @@
-package com.sauyee333.herospin.network.omdb.model.search;
+package com.sauyee333.herospin.network.omdb.model.searchapi;
 
 /**
  * Created by sauyee on 29/10/16.
  */
 
-public class Search {
+public class SearchInfo {
     private String Year;
 
     private String Type;

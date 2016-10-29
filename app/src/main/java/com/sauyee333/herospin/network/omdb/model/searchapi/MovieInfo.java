@@ -1,23 +1,21 @@
-package com.sauyee333.herospin.network.omdb.model.search;
-
-import com.sauyee333.herospin.network.omdb.model.search.Search;
+package com.sauyee333.herospin.network.omdb.model.searchapi;
 
 /**
  * Created by sauyee on 29/10/16.
  */
 
-public class SearchResponse {
-    private com.sauyee333.herospin.network.omdb.model.search.Search[] Search;
+public class MovieInfo {
+    private SearchInfo[] Search;
 
     private String totalResults;
 
     private String Response;
 
-    public Search[] getSearch() {
+    public SearchInfo[] getSearch() {
         return Search;
     }
 
-    public void setSearch(Search[] Search) {
+    public void setSearch(SearchInfo[] Search) {
         this.Search = Search;
     }
 
@@ -39,6 +37,6 @@ public class SearchResponse {
 
     @Override
     public String toString() {
-        return "ClassPojo [Search = " + Search + ", totalResults = " + totalResults + ", Response = " + Response + "]";
+        return "ClassPojo [SearchInfo = " + Search + ", totalResults = " + totalResults + ", Response = " + Response + "]";
     }
 }

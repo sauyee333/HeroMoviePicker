@@ -5,29 +5,29 @@ package com.sauyee333.herospin.network.marvel.model.characterList;
  */
 
 public class Data {
-    private String total;
+    private int total;
 
-    private String limit;
+    private int limit;
 
     private Results[] results;
 
-    private String count;
+    private int count;
 
-    private String offset;
+    private int offset;
 
-    public String getTotal() {
+    public int getTotal() {
         return total;
     }
 
-    public void setTotal(String total) {
+    public void setTotal(int total) {
         this.total = total;
     }
 
-    public String getLimit() {
+    public int getLimit() {
         return limit;
     }
 
-    public void setLimit(String limit) {
+    public void setLimit(int limit) {
         this.limit = limit;
     }
 
@@ -39,19 +39,19 @@ public class Data {
         this.results = results;
     }
 
-    public String getCount() {
+    public int getCount() {
         return count;
     }
 
-    public void setCount(String count) {
+    public void setCount(int count) {
         this.count = count;
     }
 
-    public String getOffset() {
+    public int getOffset() {
         return offset;
     }
 
-    public void setOffset(String offset) {
+    public void setOffset(int offset) {
         this.offset = offset;
     }
 
