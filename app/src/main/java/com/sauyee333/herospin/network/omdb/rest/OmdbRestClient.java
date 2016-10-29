@@ -46,4 +46,16 @@ public class OmdbRestClient {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);
     }
+
+    public void getMovieListApi(Subscriber<Void> subscriber,
+                                    String search) {
+        Observable observable = rxInterface.getMovieList(search);
+        setupSubscribe(observable, subscriber);
+    }
+
+    public void getMovieDetailApi(Subscriber<Void> subscriber,
+                                  String imdbId) {
+        Observable observable = rxInterface.getMovieDetail(imdbId);
+        setupSubscribe(observable, subscriber);
+    }
 }

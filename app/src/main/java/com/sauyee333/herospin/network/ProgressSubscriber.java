@@ -1,8 +1,16 @@
 package com.sauyee333.herospin.network;
 
 import android.content.Context;
-import android.widget.Toast;
+import android.text.TextUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import com.sauyee333.herospin.network.marvel.model.characterList.ErrorParser;
+
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Subscriber;
 
 /**
@@ -10,11 +18,11 @@ import rx.Subscriber;
  */
 
 public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressChangeListener {
-    private SubscribeOnNextListener mSubscribeOnNextListener;
+    private SubscribeOnResponseListener mSubscribeOnNextListener;
     private ProgressDialogHandler mProgressDialogHandler;
     private Context mContext;
 
-    public ProgressSubscriber(SubscribeOnNextListener subscribeOnNextListener, Context context, boolean showDialog, boolean dialogCancel) {
+    public ProgressSubscriber(SubscribeOnResponseListener subscribeOnNextListener, Context context, boolean showDialog, boolean dialogCancel) {
         mSubscribeOnNextListener = subscribeOnNextListener;
         mContext = context;
         if (showDialog && context != null) {
@@ -46,11 +54,26 @@ public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressChan
     }
 
     @Override
-    public void onError(Throwable e) {
-        e.printStackTrace();
+    public void onError(Throwable throwable) {
+        throwable.printStackTrace();
         dismissProgressDialog();
-        if (mContext != null) {
-            Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
+
+        String errorMsg = "";
+        ResponseBody body = ((HttpException) throwable).response().errorBody();
+        Gson gson = new Gson();
+        TypeAdapter<ErrorParser> adapter = gson.getAdapter
+                (ErrorParser.class);
+        try {
+            ErrorParser errorParser = adapter.fromJson(body.string());
+            errorMsg = errorParser.getCode() + " " + errorParser.getMessage();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (TextUtils.isEmpty(errorMsg)) {
+            errorMsg = throwable.toString();
+        }
+        if (mSubscribeOnNextListener != null) {
+            mSubscribeOnNextListener.onError(errorMsg);
         }
     }
 

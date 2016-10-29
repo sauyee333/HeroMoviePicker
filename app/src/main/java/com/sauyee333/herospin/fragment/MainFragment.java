@@ -7,12 +7,14 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.sauyee333.herospin.R;
 import com.sauyee333.herospin.network.ProgressSubscriber;
-import com.sauyee333.herospin.network.SubscribeOnNextListener;
+import com.sauyee333.herospin.network.SubscribeOnResponseListener;
 import com.sauyee333.herospin.network.marvel.model.characterList.CharacterInfo;
 import com.sauyee333.herospin.network.marvel.rest.MarvelRestClient;
+import com.sauyee333.herospin.network.omdb.rest.OmdbRestClient;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -25,14 +27,46 @@ import butterknife.ButterKnife;
 
 public class MainFragment extends Fragment {
     private Context mContext;
-    private SubscribeOnNextListener onGetCharacterListNext = new SubscribeOnNextListener<CharacterInfo>() {
+    private SubscribeOnResponseListener onGetCharacterListHandler = new SubscribeOnResponseListener<CharacterInfo>() {
         @Override
         public void onNext(CharacterInfo characterInfo) {
         }
+
+        @Override
+        public void onError(String errorMsg) {
+            displayErrorMessage(errorMsg);
+        }
     };
-    private SubscribeOnNextListener onGetCharacterIdNext = new SubscribeOnNextListener<CharacterInfo>() {
+    private SubscribeOnResponseListener onGetCharacterIdHandler = new SubscribeOnResponseListener<CharacterInfo>() {
         @Override
         public void onNext(CharacterInfo characterInfo) {
+        }
+
+        @Override
+        public void onError(String errorMsg) {
+            displayErrorMessage(errorMsg);
+        }
+    };
+
+    private SubscribeOnResponseListener onGetMovieListHandler = new SubscribeOnResponseListener<Void>() {
+        @Override
+        public void onNext(Void characterInfo) {
+        }
+
+        @Override
+        public void onError(String errorMsg) {
+            displayErrorMessage(errorMsg);
+        }
+    };
+
+    private SubscribeOnResponseListener onGetMovieDetailHandler = new SubscribeOnResponseListener<Void>() {
+        @Override
+        public void onNext(Void characterInfo) {
+        }
+
+        @Override
+        public void onError(String errorMsg) {
+            displayErrorMessage(errorMsg);
         }
     };
 
@@ -42,7 +76,7 @@ public class MainFragment extends Fragment {
         ButterKnife.bind(this, view);
         mContext = getContext();
 //        getCharacterList();
-        getCharacterId();
+        getCharacterId("1011334");
         return view;
     }
 
@@ -50,27 +84,31 @@ public class MainFragment extends Fragment {
         String apiKey = getResources().getString(R.string.marvelPublicKey);
         String timeStamp = getTimeStamp();
         String hash = generateHash(timeStamp, getResources().getString(R.string.marvelPrivateKey), apiKey);
-        MarvelRestClient.getInstance().getCharacterListApi(new ProgressSubscriber<CharacterInfo>(onGetCharacterListNext, mContext, true, true),
+        MarvelRestClient.getInstance().getCharacterListApi(new ProgressSubscriber<CharacterInfo>(onGetCharacterListHandler, mContext, true, true),
                 apiKey,
                 timeStamp,
                 hash,
                 null, null, null, null);
     }
 
-    private void getCharacterId() {
-        String characterId = "1011334";
+    private void getCharacterId(String id) {
+        String characterId = id;
         String apiKey = getResources().getString(R.string.marvelPublicKey);
         String timeStamp = getTimeStamp();
         String hash = generateHash(timeStamp, getResources().getString(R.string.marvelPrivateKey), apiKey);
-        MarvelRestClient.getInstance().getCharacterIdApi(new ProgressSubscriber<CharacterInfo>(onGetCharacterIdNext, mContext, true, true),
+        MarvelRestClient.getInstance().getCharacterIdApi(new ProgressSubscriber<CharacterInfo>(onGetCharacterIdHandler, mContext, true, true),
                 characterId,
                 apiKey,
                 timeStamp,
                 hash);
     }
 
+    private void displayErrorMessage(String msg) {
+        Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+    }
+
     private String getTimeStamp() {
-        Long tsLong = System.currentTimeMillis() / 1000;
+        Long tsLong = System.currentTimeMillis();
         return tsLong.toString();
     }
 
@@ -105,5 +143,15 @@ public class MainFragment extends Fragment {
             imageUrl = path + "/" + variant + "." + extension;
         }
         return imageUrl;
+    }
+
+
+    private void getMovieList(String id) {
+        String characterId = id;
+        String apiKey = getResources().getString(R.string.marvelPublicKey);
+        String timeStamp = getTimeStamp();
+        String hash = generateHash(timeStamp, getResources().getString(R.string.marvelPrivateKey), apiKey);
+        OmdbRestClient.getInstance().getMovieListApi(new ProgressSubscriber<Void>(onGetMovieListHandler, mContext, true, true),
+                "spiderman");
     }
 }

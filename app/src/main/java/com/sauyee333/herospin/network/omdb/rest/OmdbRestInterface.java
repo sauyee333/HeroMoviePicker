@@ -11,4 +11,7 @@ import rx.Observable;
 public interface OmdbRestInterface {
     @GET("?")
     Observable<Void> getMovieList(@Query("s") String search);
+
+    @GET("?")
+    Observable<Void> getMovieDetail(@Query("i") String imdbId);
 }
