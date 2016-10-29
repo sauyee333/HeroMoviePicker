@@ -14,6 +14,8 @@ import com.sauyee333.herospin.network.ProgressSubscriber;
 import com.sauyee333.herospin.network.SubscribeOnResponseListener;
 import com.sauyee333.herospin.network.marvel.model.characterList.CharacterInfo;
 import com.sauyee333.herospin.network.marvel.rest.MarvelRestClient;
+import com.sauyee333.herospin.network.omdb.model.imdb.ImdbInfo;
+import com.sauyee333.herospin.network.omdb.model.search.SearchResponse;
 import com.sauyee333.herospin.network.omdb.rest.OmdbRestClient;
 
 import java.security.MessageDigest;
@@ -48,9 +50,9 @@ public class MainFragment extends Fragment {
         }
     };
 
-    private SubscribeOnResponseListener onGetMovieListHandler = new SubscribeOnResponseListener<Void>() {
+    private SubscribeOnResponseListener onGetMovieListHandler = new SubscribeOnResponseListener<SearchResponse>() {
         @Override
-        public void onNext(Void characterInfo) {
+        public void onNext(SearchResponse searchResponse) {
         }
 
         @Override
@@ -59,9 +61,9 @@ public class MainFragment extends Fragment {
         }
     };
 
-    private SubscribeOnResponseListener onGetMovieDetailHandler = new SubscribeOnResponseListener<Void>() {
+    private SubscribeOnResponseListener onGetMovieDetailHandler = new SubscribeOnResponseListener<ImdbInfo>() {
         @Override
-        public void onNext(Void characterInfo) {
+        public void onNext(ImdbInfo imdbInfo) {
         }
 
         @Override
@@ -76,7 +78,9 @@ public class MainFragment extends Fragment {
         ButterKnife.bind(this, view);
         mContext = getContext();
 //        getCharacterList();
-        getCharacterId("1011334");
+//        getCharacterId("1011334");
+//        getMovieList("Batman");
+        getMovieDetail("tt1922373");
         return view;
     }
 
@@ -146,12 +150,17 @@ public class MainFragment extends Fragment {
     }
 
 
-    private void getMovieList(String id) {
-        String characterId = id;
-        String apiKey = getResources().getString(R.string.marvelPublicKey);
-        String timeStamp = getTimeStamp();
-        String hash = generateHash(timeStamp, getResources().getString(R.string.marvelPrivateKey), apiKey);
-        OmdbRestClient.getInstance().getMovieListApi(new ProgressSubscriber<Void>(onGetMovieListHandler, mContext, true, true),
-                "spiderman");
+    private void getMovieList(String search) {
+        if (!TextUtils.isEmpty(search)) {
+            OmdbRestClient.getInstance().getMovieListApi(new ProgressSubscriber<SearchResponse>(onGetMovieListHandler, mContext, true, true),
+                    search);
+        }
+    }
+
+    private void getMovieDetail(String imdbId) {
+        if (!TextUtils.isEmpty(imdbId)) {
+            OmdbRestClient.getInstance().getMovieDetailApi(new ProgressSubscriber<ImdbInfo>(onGetMovieDetailHandler, mContext, true, true),
+                    imdbId);
+        }
     }
 }

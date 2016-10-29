@@ -1,5 +1,8 @@
 package com.sauyee333.herospin.network.omdb.rest;
 
+import com.sauyee333.herospin.network.omdb.model.imdb.ImdbInfo;
+import com.sauyee333.herospin.network.omdb.model.search.SearchResponse;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -47,13 +50,13 @@ public class OmdbRestClient {
                 .subscribe(subscriber);
     }
 
-    public void getMovieListApi(Subscriber<Void> subscriber,
+    public void getMovieListApi(Subscriber<SearchResponse> subscriber,
                                     String search) {
         Observable observable = rxInterface.getMovieList(search);
         setupSubscribe(observable, subscriber);
     }
 
-    public void getMovieDetailApi(Subscriber<Void> subscriber,
+    public void getMovieDetailApi(Subscriber<ImdbInfo> subscriber,
                                   String imdbId) {
         Observable observable = rxInterface.getMovieDetail(imdbId);
         setupSubscribe(observable, subscriber);
