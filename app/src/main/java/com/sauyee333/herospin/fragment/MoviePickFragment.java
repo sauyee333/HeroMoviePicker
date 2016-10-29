@@ -1,5 +1,6 @@
 package com.sauyee333.herospin.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.sauyee333.herospin.R;
+import com.sauyee333.herospin.listener.MainListener;
 import com.sauyee333.herospin.network.ProgressSubscriber;
 import com.sauyee333.herospin.network.SubscribeOnResponseListener;
 import com.sauyee333.herospin.network.marvel.model.characterList.CharacterInfo;
@@ -36,9 +39,12 @@ import butterknife.ButterKnife;
 public class MoviePickFragment extends Fragment {
 
     private Context mContext;
+    private MainListener mListener;
+
     private int mCharacterListTotal = 0;
     private int mCharacterOffset = -1;
     private int mCharacterLimit = 0;
+    private int mCharacterIndex = -1;
     private CharacterInfo mCharacterInfo;
 
     private SubscribeOnResponseListener onGetCharacterListHandler = new SubscribeOnResponseListener<CharacterInfo>() {
@@ -59,6 +65,7 @@ public class MoviePickFragment extends Fragment {
                             getCharacterList(limit, mCharacterOffset);
                         } else {
                             mCharacterLimit = results.length;
+                            mCharacterInfo = characterInfo;
                             if (mCharacterLimit > 0) {
                                 int chosenIndex = -1;
                                 for (int i = 0; i < mCharacterLimit; i++) {
@@ -69,7 +76,7 @@ public class MoviePickFragment extends Fragment {
                                         imgUrl = generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_PORTRAIT_MEDIUM, thumbnail.getExtension());
 //                                        _Debug("imgUrl: (" + imgUrl + ")");
 
-                                        if(chosenIndex <0 && !imgUrl.contains(getResources().getString(R.string.imageNotAvailable))){
+                                        if (chosenIndex < 0 && !imgUrl.contains(getResources().getString(R.string.imageNotAvailable))) {
                                             chosenIndex = i;
                                         }
                                     }
@@ -77,9 +84,10 @@ public class MoviePickFragment extends Fragment {
 //                                    _Debug(results1.getId() + " " + results1.getResourceURI());
                                 }
 //search movie for chosen character
-                                if(chosenIndex >= 0) {
+                                if (chosenIndex >= 0) {
+                                    mCharacterIndex = chosenIndex;
                                     getMovieList(results[chosenIndex].getName());
-                                }else{
+                                } else {
                                     //shows no image error
                                 }
                             } else {
@@ -115,7 +123,7 @@ public class MoviePickFragment extends Fragment {
         public void onNext(MovieInfo movieInfo) {
             if (movieInfo != null) {
                 String response = movieInfo.getResponse();
-                if(!TextUtils.isEmpty(response)) {
+                if (!TextUtils.isEmpty(response)) {
                     if (response.equals("False")) {
                         displayErrorMessage(movieInfo.getError());
                     } else {
@@ -131,6 +139,7 @@ public class MoviePickFragment extends Fragment {
                         } else {
                             //not found
 //                    search again
+
                         }
                     }
                 }
@@ -146,6 +155,16 @@ public class MoviePickFragment extends Fragment {
     private SubscribeOnResponseListener onGetMovieDetailHandler = new SubscribeOnResponseListener<ImdbInfo>() {
         @Override
         public void onNext(ImdbInfo imdbInfo) {
+            String response = imdbInfo.getResponse();
+            if (!TextUtils.isEmpty(response)) {
+                if (response.equals("False")) {
+                    displayErrorMessage(imdbInfo.getError());
+                } else {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Constants.BUNDLE_STRING_CONTENTS, new Gson().toJson(imdbInfo));
+                    loadMovieDetailPage(bundle);
+                }
+            }
         }
 
         @Override
@@ -168,10 +187,28 @@ public class MoviePickFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (MainListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement TabletLoadingListener");
+        }
+    }
+
+    private void loadMovieDetailPage(Bundle bundle) {
+        Fragment fragment = new MovieDetailFragment();
+        fragment.setArguments(bundle);
+        mListener.onShowFragment(fragment, false);
+    }
+
     private void resetCharacterInfo() {
         mCharacterListTotal = 0;
         mCharacterOffset = -1;
         mCharacterLimit = 0;
+        mCharacterIndex = -1;
         mCharacterInfo = null;
     }
 

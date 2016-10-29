@@ -26,5 +26,6 @@ public class Constants {
     public static final String MARVEL_IMAGE_LANDSCAPE_AMAZING = "landscape_amazing"; //250x156
     public static final String MARVEL_IMAGE_LANDSCAPE_INCREDIBLE = "standard_incredible"; //464x261
 
+    public static final String BUNDLE_STRING_CONTENTS = "contents";
 
 }
