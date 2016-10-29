@@ -47,6 +47,8 @@ public class ImdbInfo {
 
     private String Director;
 
+    private String Error;
+
     public String getReleased() {
         return Released;
     }
@@ -215,6 +217,13 @@ public class ImdbInfo {
         this.Director = Director;
     }
 
+    public String getError() {
+        return Error;
+    }
+
+    public void setError(String Error) {
+        this.Error = Error;
+    }
     @Override
     public String toString() {
         return "ClassPojo [Released = " + Released + ", Type = " + Type + ", imdbVotes = " + imdbVotes + ", Runtime = " + Runtime + ", Response = " + Response + ", Poster = " + Poster + ", imdbID = " + imdbID + ", Country = " + Country + ", Title = " + Title + ", imdbRating = " + imdbRating + ", Year = " + Year + ", Rated = " + Rated + ", Actors = " + Actors + ", Plot = " + Plot + ", Metascore = " + Metascore + ", Writer = " + Writer + ", Genre = " + Genre + ", Language = " + Language + ", Awards = " + Awards + ", totalSeasons = " + totalSeasons + ", Director = " + Director + "]";

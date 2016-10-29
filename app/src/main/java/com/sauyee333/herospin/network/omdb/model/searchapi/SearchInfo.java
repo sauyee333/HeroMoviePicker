@@ -15,6 +15,8 @@ public class SearchInfo {
 
     private String Title;
 
+    private String Error;
+
     public String getYear() {
         return Year;
     }
@@ -53,6 +55,14 @@ public class SearchInfo {
 
     public void setTitle(String Title) {
         this.Title = Title;
+    }
+
+    public String getError() {
+        return Error;
+    }
+
+    public void setError(String Error) {
+        this.Error = Error;
     }
 
     @Override
