@@ -107,7 +107,7 @@ public class MovieDetailFragment extends Fragment {
             mListener = (MainListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement TabletLoadingListener");
+                    + " must implement MainListener");
         }
     }
 

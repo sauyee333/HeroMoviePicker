@@ -196,7 +196,7 @@ public class MoviePickFragment extends Fragment {
             mListener = (MainListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement TabletLoadingListener");
+                    + " must implement MainListener");
         }
     }
 
@@ -226,12 +226,13 @@ public class MoviePickFragment extends Fragment {
         String apiKey = getResources().getString(R.string.marvelPublicKey);
         String timeStamp = getTimeStamp();
         String hash = generateHash(timeStamp, getResources().getString(R.string.marvelPrivateKey), apiKey);
+        String modified = Constants.MARVEL_QUERY_ORDER_MODIFIED;
         String limitStr = (limit <= 0) ? null : Integer.toString(limit);
         String offsetStr = (limit <= 0 && offset <= 0) ? null : Integer.toString(offset);
         String modifiedSince = Constants.MARVEL_QUERY_MODIFIED_SINCE_DATE;
         MarvelRestClient.getInstance().getCharacterListApi(new ProgressSubscriber<CharacterInfo>(onGetCharacterListHandler, mContext, true, true),
                 apiKey, timeStamp, hash,
-                null, null, null,
+                null, null, modified,
                 limitStr, offsetStr, modifiedSince);
     }
 
