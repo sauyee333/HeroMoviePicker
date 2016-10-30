@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,11 +26,13 @@ import com.sauyee333.herospin.utils.Constants;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.Subscriber;
 
 /**
  * Created by sauyee on 29/10/16.
@@ -38,7 +40,8 @@ import butterknife.ButterKnife;
 
 public class HeroListFragment extends Fragment {
 
-    public static final int CHARACTER_COUNT_PER_PAGE = 10;
+    public static final int CHARACTER_COUNT_PER_PAGE = 15;
+    public static final int CHARACTER_COUNT_PER_ROW = 3;
 
     @Bind(R.id.list)
     RecyclerView mRecyclerListView;
@@ -49,12 +52,14 @@ public class HeroListFragment extends Fragment {
     private Context mContext;
     private MainListener mListener;
     private HeroListAdapter mAdapter;
+    private GridLayoutManager mLayoutManager;
 
     private int mCharacterListTotal = 0;
-    private int mCharacterOffset = -1;
+    private int mCharacterOffset = 0;
     private int mCharacterLimit = 0;
-    private int mCharacterIndex = -1;
     private CharacterInfo mCharacterInfo;
+    private int mFetchPage = 0;
+    private List<Results> mResultsList;
 
     private SubscribeOnResponseListener onGetCharacterListHandler = new SubscribeOnResponseListener<CharacterInfo>() {
         @Override
@@ -62,6 +67,14 @@ public class HeroListFragment extends Fragment {
             if (characterInfo != null) {
                 Data data = characterInfo.getData();
                 if (data != null) {
+                    mCharacterOffset = data.getOffset();
+                    mCharacterListTotal = data.getTotal();
+                    mCharacterLimit = data.getLimit();
+//                    _Debug("onnext offset: " + mCharacterOffset);
+//                    _Debug("onnext total: " + mCharacterListTotal);
+//                    _Debug("onnext limit: " + mCharacterLimit);
+
+                    refreshCurrentFetchPage();
                     Results[] results = data.getResults();
                     if (results != null) {
                         for (int i = 0; i < results.length; i++) {
@@ -70,12 +83,13 @@ public class HeroListFragment extends Fragment {
                             String imgUrl;
                             if (thumbnail != null) {
                                 imgUrl = generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_PORTRAIT_MEDIUM, thumbnail.getExtension());
+//                                _Debug("imgUrl: " + imgUrl);
                             }
 //                            _Debug(results1.getName() + " " + results1.getDescription());
 //                            _Debug(results1.getId() + " " + results1.getResourceURI());
                         }
-                        List<Results> resultsList = Arrays.asList(results);
-                        updateHeroList(resultsList);
+                        mResultsList = new ArrayList<>(Arrays.asList(results));
+                        updateHeroList(mResultsList);
                     }
                 }
             }
@@ -86,6 +100,48 @@ public class HeroListFragment extends Fragment {
             displayErrorMessage(errorMsg);
         }
     };
+
+    private SubscribeOnResponseListener onAddCharacterListHandler = new SubscribeOnResponseListener<CharacterInfo>() {
+        @Override
+        public void onNext(CharacterInfo characterInfo) {
+            if (characterInfo != null) {
+                Data data = characterInfo.getData();
+                if (data != null) {
+                    mCharacterOffset = data.getOffset();
+                    mCharacterListTotal = data.getTotal();
+                    mCharacterLimit = data.getLimit();
+//                    _Debug("2. onnext offset: " + mCharacterOffset);
+//                    _Debug("2. onnext total: " + mCharacterListTotal);
+//                    _Debug("2. onnext limit: " + mCharacterLimit);
+                    refreshCurrentFetchPage();
+                    Results[] results = data.getResults();
+                    if (results != null) {
+                        for (int i = 0; i < results.length; i++) {
+                            Results results1 = results[i];
+                            Thumbnail thumbnail = results1.getThumbnail();
+                            String imgUrl;
+                            if (thumbnail != null) {
+                                imgUrl = generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_PORTRAIT_MEDIUM, thumbnail.getExtension());
+//                                _Debug("imgUrl: " + imgUrl);
+                            }
+//                            _Debug(results1.getName() + " " + results1.getDescription());
+//                            _Debug(results1.getId() + " " + results1.getResourceURI());
+                        }
+
+                        List<Results> newResults = new ArrayList<>(Arrays.asList(results));
+                        mResultsList.addAll(newResults);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onError(String errorMsg) {
+            displayErrorMessage(errorMsg);
+        }
+    };
+
     private SubscribeOnResponseListener onGetCharacterIdHandler = new SubscribeOnResponseListener<CharacterInfo>() {
         @Override
         public void onNext(CharacterInfo characterInfo) {
@@ -104,8 +160,9 @@ public class HeroListFragment extends Fragment {
         mContext = getContext();
 
         setupListConfig();
+        setupScrollListener();
 
-        getCharacterList(CHARACTER_COUNT_PER_PAGE, 0);
+        getCharacterList(CHARACTER_COUNT_PER_PAGE, mCharacterOffset, false);
         return view;
     }
 
@@ -122,11 +179,53 @@ public class HeroListFragment extends Fragment {
 
     private void setupListConfig() {
         mRecyclerListView.setHasFixedSize(true);
-//        GridLayoutManager layoutManager = new GridLayoutManager(
-//                mContext, 2);
 
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
-        mRecyclerListView.setLayoutManager(layoutManager);
+        mLayoutManager = new GridLayoutManager(
+                mContext, CHARACTER_COUNT_PER_ROW);
+        mRecyclerListView.setLayoutManager(mLayoutManager);
+    }
+
+    private void refreshCurrentFetchPage() {
+        mFetchPage = mCharacterOffset / mCharacterLimit;
+//        _Debug("refreshCurrentFetchPage mFetchPage :" + mFetchPage);
+    }
+
+    private void setupScrollListener() {
+        mRecyclerListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int visibleItemCount = mLayoutManager.getChildCount();
+                int totalItemCount = mLayoutManager.getItemCount();
+                int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
+
+//                _Debug("\nvisibleItemCount: " + visibleItemCount + " " + firstVisibleItemPosition + " " + totalItemCount);
+                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount) {
+                    int newPage = mCharacterOffset + 1;
+                    int totalPage = mCharacterListTotal / mCharacterLimit;
+                    int remainItems = mCharacterListTotal % mCharacterLimit;
+//                    _Debug("\ncalc: " + mCharacterListTotal + " " + mCharacterLimit);
+//                    _Debug("total remain: " + totalPage + " " + remainItems);
+                    if (remainItems > 0) {
+                        totalPage += 1;
+//                        _Debug("total remain: " + totalPage + " " + remainItems);
+                    }
+//                    _Debug("new: " + newPage + " " + mFetchPage + " " + totalPage);
+                    if (newPage > mFetchPage && newPage <= totalPage) {
+                        int newOffset = mCharacterOffset + mCharacterLimit;
+//                        _Debug("newoffset: " + newOffset);
+                        getCharacterList(CHARACTER_COUNT_PER_PAGE, newOffset, true);
+                        mFetchPage = newPage;
+//                        _Debug("nneed fetch more");
+                    }
+                }
+            }
+        });
     }
 
     private void updateHeroList(List<Results> resultsList) {
@@ -136,17 +235,31 @@ public class HeroListFragment extends Fragment {
         }
     }
 
-    private void getCharacterList(int limit, int offset) {
+    private void addHeroList(List<Results> resultsList) {
+        if (isAdded() && !isRemoving()) {
+            mAdapter = new HeroListAdapter(mContext, getActivity(), mListener, resultsList);
+            mRecyclerListView.setAdapter(mAdapter);
+        }
+    }
+
+    private void getCharacterList(int limit, int offset, boolean addList) {
         String apiKey = getResources().getString(R.string.marvelPublicKey);
         String timeStamp = getTimeStamp();
         String hash = generateHash(timeStamp, getResources().getString(R.string.marvelPrivateKey), apiKey);
         String modified = Constants.MARVEL_QUERY_ORDER_MODIFIED;
         String limitStr = (limit <= 0) ? null : Integer.toString(limit);
         String offsetStr = (limit <= 0 && offset <= 0) ? null : Integer.toString(offset);
-        MarvelRestClient.getInstance().getCharacterListApi(new ProgressSubscriber<CharacterInfo>(onGetCharacterListHandler, mContext, true, true),
+        String modifiedSince = Constants.MARVEL_QUERY_MODIFIED_SINCE_DATE;
+        Subscriber<CharacterInfo> subscriber;
+        if (addList) {
+            subscriber = new ProgressSubscriber<CharacterInfo>(onAddCharacterListHandler, mContext, true, true);
+        } else {
+            subscriber = new ProgressSubscriber<CharacterInfo>(onGetCharacterListHandler, mContext, true, true);
+        }
+        MarvelRestClient.getInstance().getCharacterListApi(subscriber,
                 apiKey, timeStamp, hash,
                 null, null, modified,
-                limitStr, offsetStr, null);
+                limitStr, offsetStr, modifiedSince);
     }
 
     private void getCharacterId(String id) {
@@ -210,10 +323,7 @@ public class HeroListFragment extends Fragment {
     }
 
     private void resetCharacterInfo() {
-        mCharacterListTotal = 0;
-        mCharacterOffset = -1;
-        mCharacterLimit = 0;
-        mCharacterIndex = -1;
+        mCharacterOffset = 0;
         mCharacterInfo = null;
     }
 }
