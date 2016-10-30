@@ -59,6 +59,7 @@ public class MoviePickFragment extends Fragment {
 
                         if (mCharacterOffset == -1) {
                             mCharacterListTotal = data.getTotal();
+//                            _Debug("mCharacterListTotal: " + mCharacterListTotal);
                             //generate random number and get a character
                             int limit = 10;
                             mCharacterOffset = new Random().nextInt(mCharacterListTotal);
@@ -86,6 +87,7 @@ public class MoviePickFragment extends Fragment {
 //search movie for chosen character
                                 if (chosenIndex >= 0) {
                                     mCharacterIndex = chosenIndex;
+//                                    _Debug("results[chosenIndex].getName(): " + results[chosenIndex].getName());
                                     getMovieList(results[chosenIndex].getName());
                                 } else {
                                     //shows no image error
@@ -226,11 +228,11 @@ public class MoviePickFragment extends Fragment {
         String hash = generateHash(timeStamp, getResources().getString(R.string.marvelPrivateKey), apiKey);
         String limitStr = (limit <= 0) ? null : Integer.toString(limit);
         String offsetStr = (limit <= 0 && offset <= 0) ? null : Integer.toString(offset);
+        String modifiedSince = Constants.MARVEL_QUERY_MODIFIED_SINCE_DATE;
         MarvelRestClient.getInstance().getCharacterListApi(new ProgressSubscriber<CharacterInfo>(onGetCharacterListHandler, mContext, true, true),
-                apiKey,
-                timeStamp,
-                hash,
-                null, null, null, limitStr, offsetStr);
+                apiKey, timeStamp, hash,
+                null, null, null,
+                limitStr, offsetStr, modifiedSince);
     }
 
     private void getCharacterId(String id) {

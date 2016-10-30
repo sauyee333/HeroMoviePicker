@@ -28,4 +28,5 @@ public class Constants {
 
     public static final String BUNDLE_STRING_CONTENTS = "contents";
 
+    public static final String MARVEL_QUERY_MODIFIED_SINCE_DATE = "2000-01-01T12:00:00-0000";
 }
