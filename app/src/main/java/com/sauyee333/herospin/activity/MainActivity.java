@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import com.sauyee333.herospin.R;
+import com.sauyee333.herospin.fragment.MovieDetailFragment;
 import com.sauyee333.herospin.fragment.MoviePickFragment;
 import com.sauyee333.herospin.listener.MainListener;
 
@@ -16,11 +17,26 @@ public class MainActivity extends AppCompatActivity implements MainListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        showMainFragment();
+        loadMoviePickFragment();
+//        loadMovieDetailFragment();
     }
 
-    private void showMainFragment() {
+    @Override
+    public void onFragmentBackPress() {
+        FragmentManager manager = getSupportFragmentManager();
+        manager.popBackStackImmediate();
+        if (manager.getBackStackEntryCount() == 0) {
+            finish();
+        }
+    }
+
+    private void loadMoviePickFragment() {
         Fragment fragment = new MoviePickFragment();
+        showFragment(fragment, false);
+    }
+
+    private void loadMovieDetailFragment() {
+        Fragment fragment = new MovieDetailFragment();
         showFragment(fragment, false);
     }
 

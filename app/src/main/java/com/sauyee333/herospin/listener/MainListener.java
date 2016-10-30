@@ -8,4 +8,6 @@ import android.support.v4.app.Fragment;
 
 public interface MainListener {
     void onShowFragment(Fragment fragment, boolean force);
+
+    void onFragmentBackPress();
 }

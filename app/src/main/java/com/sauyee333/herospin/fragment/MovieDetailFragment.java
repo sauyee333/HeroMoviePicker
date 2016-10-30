@@ -8,9 +8,11 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.sauyee333.herospin.R;
 import com.sauyee333.herospin.listener.MainListener;
@@ -22,6 +24,7 @@ import com.sauyee333.herospin.utils.Constants;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by sauyee on 29/10/16.
@@ -46,6 +49,12 @@ public class MovieDetailFragment extends Fragment {
 
     @Bind(R.id.plot)
     TextView plot;
+
+    @Bind(R.id.poster)
+    ImageView poster;
+
+    @Bind(R.id.title)
+    TextView title;
 
     private Context mContext;
     private MainListener mListener;
@@ -86,7 +95,7 @@ public class MovieDetailFragment extends Fragment {
         }
 
         if (mImdbInfo == null) {
-//            getMovieDetail("tt1922373");
+            getMovieDetail("tt1922373");
         }
         return view;
     }
@@ -102,6 +111,13 @@ public class MovieDetailFragment extends Fragment {
         }
     }
 
+    @OnClick(R.id.btnClose)
+    public void closePage() {
+        if (mListener != null) {
+            mListener.onFragmentBackPress();
+        }
+    }
+
     private void getMovieDetail(String imdbId) {
         if (!TextUtils.isEmpty(imdbId)) {
             OmdbRestClient.getInstance().getMovieDetailApi(new ProgressSubscriber<ImdbInfo>(onGetMovieDetailHandler, mContext, true, true),
@@ -113,14 +129,19 @@ public class MovieDetailFragment extends Fragment {
         Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
     }
 
-    private void updateMovieDetail(ImdbInfo imdbInfo){
-        if(imdbInfo != null) {
+    private void updateMovieDetail(ImdbInfo imdbInfo) {
+        if (imdbInfo != null) {
             actors.setText(imdbInfo.getActors());
             genre.setText(imdbInfo.getGenre());
             language.setText(imdbInfo.getLanguage());
             year.setText(imdbInfo.getYear());
             imdb.setText(imdbInfo.getImdbRating());
             plot.setText(imdbInfo.getPlot());
+            title.setText(imdbInfo.getTitle());
+
+            Glide.with(mContext)
+                    .load(imdbInfo.getPoster())
+                    .into(poster);
         }
     }
 }
