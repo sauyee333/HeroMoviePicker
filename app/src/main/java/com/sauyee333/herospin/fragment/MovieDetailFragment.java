@@ -30,6 +30,7 @@ import com.sauyee333.herospin.utils.Constants;
 import com.sauyee333.herospin.utils.SysUtility;
 
 import java.lang.ref.WeakReference;
+import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -109,11 +110,12 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
                     if (response.equals("False")) {
                         displayErrorMessage(movieInfo.getError());
                     } else {
-                        String total = movieInfo.getTotalResults();
-                        int totalInt = Integer.parseInt(total);
+                        SearchInfo[] searchInfos = movieInfo.getSearch();
+                        int totalInt = searchInfos.length;
                         if (totalInt > 0) {
+                            int random = new Random().nextInt(totalInt);
                             SearchInfo[] searchInfo = movieInfo.getSearch();
-                            SearchInfo searchInfo1 = searchInfo[0];
+                            SearchInfo searchInfo1 = searchInfo[random];
                             String imdb = searchInfo1.getImdbID();
                             if (!TextUtils.isEmpty(imdb)) {
                                 getMovieDetail(imdb);
@@ -193,7 +195,12 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
 
     @OnClick(R.id.btnSpin)
     public void spinAgain() {
-//        getMovieList(search);
+        if(heroName != null) {
+            String hero = heroName.getText().toString();
+            if (!TextUtils.isEmpty(hero)) {
+                getMovieList(hero);
+            }
+        }
     }
 
     @Override
