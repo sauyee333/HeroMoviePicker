@@ -8,6 +8,10 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -30,7 +34,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by sauyee on 29/10/16.
@@ -38,8 +44,15 @@ import butterknife.ButterKnife;
 
 public class MoviePickFragment extends Fragment {
 
+    @Bind(R.id.spinWheel)
+    ImageView spinWheel;
+
+    @Bind(R.id.startSpin)
+    Button startSpin;
+
     private Context mContext;
     private MainListener mListener;
+    private Animation animation;
 
     private int mCharacterListTotal = 0;
     private int mCharacterOffset = -1;
@@ -51,6 +64,7 @@ public class MoviePickFragment extends Fragment {
         @Override
         public void onNext(CharacterInfo characterInfo) {
             if (characterInfo != null) {
+                mCharacterInfo = characterInfo;
                 Data data = characterInfo.getData();
                 if (data != null) {
 
@@ -88,7 +102,7 @@ public class MoviePickFragment extends Fragment {
                                 if (chosenIndex >= 0) {
                                     mCharacterIndex = chosenIndex;
 //                                    _Debug("results[chosenIndex].getName(): " + results[chosenIndex].getName());
-                                    getMovieList(results[chosenIndex].getName());
+//                                    getMovieList(results[chosenIndex].getName());
                                 } else {
                                     //shows no image error
                                 }
@@ -109,6 +123,7 @@ public class MoviePickFragment extends Fragment {
             displayErrorMessage(errorMsg);
         }
     };
+
     private SubscribeOnResponseListener onGetCharacterIdHandler = new SubscribeOnResponseListener<CharacterInfo>() {
         @Override
         public void onNext(CharacterInfo characterInfo) {
@@ -158,6 +173,7 @@ public class MoviePickFragment extends Fragment {
         @Override
         public void onNext(ImdbInfo imdbInfo) {
             String response = imdbInfo.getResponse();
+            stopAnim();
             if (!TextUtils.isEmpty(response)) {
                 if (response.equals("False")) {
                     displayErrorMessage(imdbInfo.getError());
@@ -180,12 +196,15 @@ public class MoviePickFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, view);
         mContext = getContext();
+        setupSpinAnimation();
+
 //        getCharacterId("1011334");
 //        getMovieList("Batman");
 //        getMovieDetail("tt1922373");
 
 //        generateHash("1477755055051", getResources().getString(R.string.marvelPrivateKey), getResources().getString(R.string.marvelPublicKey));
         initGetCharacterTotal();
+
         return view;
     }
 
@@ -198,6 +217,48 @@ public class MoviePickFragment extends Fragment {
             throw new ClassCastException(activity.toString()
                     + " must implement MainListener");
         }
+    }
+
+    @OnClick(R.id.startSpin)
+    public void startAnim() {
+        spinWheel.startAnimation(animation);
+        CharacterInfo characterInfo = mCharacterInfo;
+        if (characterInfo != null) {
+            Data data = characterInfo.getData();
+            if (data != null) {
+                Results[] results = data.getResults();
+                if (results != null) {
+                    getMovieList(results[mCharacterIndex].getName());
+                }
+            }
+        }
+
+    }
+
+    @OnClick(R.id.stopSpin)
+    public void stopAnim() {
+        spinWheel.clearAnimation();
+        spinWheel.animate().cancel();
+    }
+
+    private void setupSpinAnimation(){
+        animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_rotate);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+//                _Debug("anim start");
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+//                _Debug("anim end");
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+//                _Debug("anim repeat");
+            }
+        });
     }
 
     private void loadMovieDetailPage(Bundle bundle) {
