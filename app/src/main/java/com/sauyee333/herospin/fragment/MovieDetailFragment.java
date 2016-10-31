@@ -3,6 +3,8 @@ package com.sauyee333.herospin.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -25,6 +27,8 @@ import com.sauyee333.herospin.network.omdb.model.searchapi.SearchInfo;
 import com.sauyee333.herospin.network.omdb.rest.OmdbRestClient;
 import com.sauyee333.herospin.utils.Constants;
 
+import java.lang.ref.WeakReference;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,6 +38,8 @@ import butterknife.OnClick;
  */
 
 public class MovieDetailFragment extends Fragment implements HeroListFragment.AddCharacterListener {
+
+    private static final int MSG_SEARCH_HERO_MOVIE = 100;
 
     @Bind(R.id.actors)
     TextView actors;
@@ -59,12 +65,12 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
     @Bind(R.id.title)
     TextView title;
 
+    private final CustomHandler mHandler = new CustomHandler(this);
     private Activity mActivity;
     private Context mContext;
     private MainListener mListener;
 
     private ImdbInfo mImdbInfo;
-    private Results mCharacterResults;
 
     private SubscribeOnResponseListener onGetMovieDetailHandler = new SubscribeOnResponseListener<ImdbInfo>() {
         @Override
@@ -133,12 +139,7 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
             updateMovieDetail(mImdbInfo);
         }
 
-        if (mCharacterResults != null) {
-            String search = mCharacterResults.getName();
-            if (!TextUtils.isEmpty(search)) {
-                getMovieList(search);
-            }
-        } else if (mImdbInfo == null) {
+        if (mImdbInfo == null) {
             getMovieDetail("tt1922373");
         }
         return view;
@@ -177,11 +178,35 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
         loadHeroListFragment();
     }
 
+    @OnClick(R.id.btnHome)
+    public void loadMoviePickFragment() {
+        closePage();
+    }
+
+    @OnClick(R.id.btnSpin)
+    public void spinAgain() {
+//        getMovieList(search);
+    }
+
     @Override
     public void confirmAddCharacter(Results results) {
         if (results != null) {
-            mCharacterResults = results;
+            String hero = results.getName();
+            if (!TextUtils.isEmpty(hero)) {
+                Bundle bundle = new Bundle();
+                bundle.putString(Constants.BUNDLE_STRING_HERO, hero);
+                sendMessageWithBundle(MSG_SEARCH_HERO_MOVIE, bundle);
+            }
         }
+    }
+
+    private void sendMessageWithBundle(int msgID, Bundle bundle) {
+        Message msg = new Message();
+        msg.what = msgID;
+        if (bundle != null) {
+            msg.setData(bundle);
+        }
+        mHandler.sendMessage(msg);
     }
 
     private void getMovieList(String search) {
@@ -228,6 +253,33 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
                     mListener.onShowFragment(fragment, false);
                 }
             });
+        }
+    }
+
+    private void handleMessage(Message message) {
+        switch (message.what) {
+            case MSG_SEARCH_HERO_MOVIE: {
+                Bundle bundle = message.getData();
+                String hero = bundle.getString(Constants.BUNDLE_STRING_HERO);
+                getMovieList(hero);
+            }
+            break;
+        }
+    }
+
+    static class CustomHandler extends Handler {
+        WeakReference<MovieDetailFragment> mFrag;
+
+        CustomHandler(MovieDetailFragment aFragment) {
+            mFrag = new WeakReference<>(aFragment);
+        }
+
+        @Override
+        public void handleMessage(Message message) {
+            MovieDetailFragment theFrag = mFrag.get();
+            if (theFrag != null) {
+                theFrag.handleMessage(message);
+            }
         }
     }
 }

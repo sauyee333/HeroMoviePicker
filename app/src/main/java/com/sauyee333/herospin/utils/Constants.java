@@ -27,7 +27,11 @@ public class Constants {
     public static final String MARVEL_IMAGE_LANDSCAPE_INCREDIBLE = "standard_incredible"; //464x261
 
     public static final String BUNDLE_STRING_CONTENTS = "contents";
+    public static final String BUNDLE_STRING_HERO = "hero";
+    public static final String BUNDLE_STRING_TYPE = "type";
 
     public static final String MARVEL_QUERY_ORDER_MODIFIED = "-modified";
     public static final String MARVEL_QUERY_MODIFIED_SINCE_DATE = "2000-01-01T12:00:00-0000";
+//    public static final String MARVEL_QUERY_MODIFIED_SINCE_DATE = "2015-01-01T12:00:00-0000";
+
 }
