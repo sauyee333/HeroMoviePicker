@@ -247,8 +247,10 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
 
     @OnClick(R.id.startSpin)
     public void startAnim() {
+        startSpin.setEnabled(false);
         startSpinWheel();
         showLoadingInfo(mContext.getResources().getString(R.string.fetchSuperHero));
+        resetHeroInfo();
         initGetCharacterTotal();
     }
 
@@ -259,6 +261,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
             spinWheel.animate().cancel();
         }
         hideLoadingInfo();
+        startSpin.setEnabled(true);
     }
 
     @OnClick(R.id.btnCharacter)
@@ -431,6 +434,16 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
             spinWheel.startAnimation(animation);
         }
     }
+
+    private void resetHeroInfo(){
+        if(heroImage != null) {
+            heroImage.setImageResource(android.R.color.transparent);
+        }
+        if(heroName != null) {
+            heroName.setText("");
+        }
+    }
+
 
     private void showLoadingInfo(String input) {
         if (!TextUtils.isEmpty(input)) {
