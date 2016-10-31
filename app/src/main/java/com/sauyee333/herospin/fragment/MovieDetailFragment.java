@@ -21,11 +21,13 @@ import com.sauyee333.herospin.listener.MainListener;
 import com.sauyee333.herospin.network.ProgressSubscriber;
 import com.sauyee333.herospin.network.SubscribeOnResponseListener;
 import com.sauyee333.herospin.network.marvel.model.characterList.Results;
+import com.sauyee333.herospin.network.marvel.model.characterList.Thumbnail;
 import com.sauyee333.herospin.network.omdb.model.imdb.ImdbInfo;
 import com.sauyee333.herospin.network.omdb.model.searchapi.MovieInfo;
 import com.sauyee333.herospin.network.omdb.model.searchapi.SearchInfo;
 import com.sauyee333.herospin.network.omdb.rest.OmdbRestClient;
 import com.sauyee333.herospin.utils.Constants;
+import com.sauyee333.herospin.utils.SysUtility;
 
 import java.lang.ref.WeakReference;
 
@@ -64,6 +66,12 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
 
     @Bind(R.id.title)
     TextView title;
+
+    @Bind(R.id.heroName)
+    TextView heroName;
+
+    @Bind(R.id.heroImage)
+    ImageView heroImage;
 
     private final CustomHandler mHandler = new CustomHandler(this);
     private Activity mActivity;
@@ -194,6 +202,12 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
             String hero = results.getName();
             if (!TextUtils.isEmpty(hero)) {
                 Bundle bundle = new Bundle();
+                Thumbnail thumbnail = results.getThumbnail();
+                if (thumbnail != null) {
+                    String imgUrl = SysUtility.generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_LANDSCAPE_SMALL, thumbnail.getExtension());
+                    bundle.putString(Constants.BUNDLE_STRING_URL, imgUrl);
+                }
+
                 bundle.putString(Constants.BUNDLE_STRING_HERO, hero);
                 sendMessageWithBundle(MSG_SEARCH_HERO_MOVIE, bundle);
             }
@@ -261,6 +275,11 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
             case MSG_SEARCH_HERO_MOVIE: {
                 Bundle bundle = message.getData();
                 String hero = bundle.getString(Constants.BUNDLE_STRING_HERO);
+                heroName.setText(hero);
+                String imgUrl = bundle.getString(Constants.BUNDLE_STRING_URL);
+                Glide.with(mContext)
+                        .load(imgUrl)
+                        .into(heroImage);
                 getMovieList(hero);
             }
             break;
