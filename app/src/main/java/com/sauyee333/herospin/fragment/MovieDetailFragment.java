@@ -304,17 +304,22 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
             case MSG_SEARCH_HERO_MOVIE: {
                 Bundle bundle = message.getData();
                 String hero = bundle.getString(Constants.BUNDLE_STRING_HERO);
-                heroName.setText(hero);
                 String imgUrl = bundle.getString(Constants.BUNDLE_STRING_URL);
-                Glide.with(mContext).load(imgUrl).asBitmap().centerCrop().into(new BitmapImageViewTarget(heroImage) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        heroImage.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
+
+                if(heroName != null) {
+                    heroName.setText(hero);
+                }
+                if(heroImage!= null) {
+                    Glide.with(mContext).load(imgUrl).asBitmap().centerCrop().into(new BitmapImageViewTarget(heroImage) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable circularBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
+                            circularBitmapDrawable.setCircular(true);
+                            heroImage.setImageDrawable(circularBitmapDrawable);
+                        }
+                    });
+                }
                 getMovieList(hero);
             }
             break;

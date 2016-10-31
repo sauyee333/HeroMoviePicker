@@ -2,8 +2,13 @@ package com.sauyee333.herospin.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +17,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
 import com.sauyee333.herospin.R;
 import com.sauyee333.herospin.listener.MainListener;
@@ -31,6 +39,7 @@ import com.sauyee333.herospin.network.omdb.rest.OmdbRestClient;
 import com.sauyee333.herospin.utils.Constants;
 import com.sauyee333.herospin.utils.SysUtility;
 
+import java.lang.ref.WeakReference;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
@@ -45,12 +54,21 @@ import butterknife.OnClick;
 
 public class MoviePickFragment extends Fragment implements HeroListFragment.AddCharacterListener {
 
+    private static final int MSG_SEARCH_HERO_MOVIE = 100;
+
     @Bind(R.id.spinWheel)
     ImageView spinWheel;
 
     @Bind(R.id.startSpin)
     Button startSpin;
 
+    @Bind(R.id.heroName)
+    TextView heroName;
+
+    @Bind(R.id.heroImage)
+    ImageView heroImage;
+
+    private final CustomHandler mHandler = new CustomHandler(this);
     private Activity mActivity;
     private Context mContext;
     private MainListener mListener;
@@ -61,7 +79,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     private int mCharacterLimit = 0;
     private int mCharacterIndex = -1;
     private CharacterInfo mCharacterInfo;
-    private Results mCharacterResults;
+    private boolean mConfirmHero = false;
 
     private SubscribeOnResponseListener onGetCharacterListHandler = new SubscribeOnResponseListener<CharacterInfo>() {
         @Override
@@ -196,7 +214,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_movie_pick, container, false);
         ButterKnife.bind(this, view);
         mActivity = getActivity();
         mContext = getContext();
@@ -207,12 +225,8 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
 //        getMovieDetail("tt1922373");
 
 //        generateHash("1477755055051", getResources().getString(R.string.marvelPrivateKey), getResources().getString(R.string.marvelPublicKey));
-        if (mCharacterResults != null) {
-            String search = mCharacterResults.getName();
-            if (!TextUtils.isEmpty(search)) {
-                getMovieList(search);
-            }
-            mCharacterResults = null;
+        if (mConfirmHero) {
+            mConfirmHero = false;
         } else {
             initGetCharacterTotal();
         }
@@ -232,7 +246,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
 
     @OnClick(R.id.startSpin)
     public void startAnim() {
-        spinWheel.startAnimation(animation);
+        startSpinWheel();
         CharacterInfo characterInfo = mCharacterInfo;
         if (characterInfo != null) {
             Data data = characterInfo.getData();
@@ -248,8 +262,10 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
 
     @OnClick(R.id.stopSpin)
     public void stopAnim() {
-        spinWheel.clearAnimation();
-        spinWheel.animate().cancel();
+        if(spinWheel != null) {
+            spinWheel.clearAnimation();
+            spinWheel.animate().cancel();
+        }
     }
 
     @OnClick(R.id.btnCharacter)
@@ -260,8 +276,29 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     @Override
     public void confirmAddCharacter(Results results) {
         if (results != null) {
-            mCharacterResults = results;
+            String hero = results.getName();
+            if (!TextUtils.isEmpty(hero)) {
+                mConfirmHero = true;
+                Bundle bundle = new Bundle();
+                Thumbnail thumbnail = results.getThumbnail();
+                if (thumbnail != null) {
+                    String imgUrl = SysUtility.generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_STANDARD_MEDIUM, thumbnail.getExtension());
+                    bundle.putString(Constants.BUNDLE_STRING_URL, imgUrl);
+                }
+
+                bundle.putString(Constants.BUNDLE_STRING_HERO, hero);
+                sendMessageWithBundle(MSG_SEARCH_HERO_MOVIE, bundle);
+            }
         }
+    }
+
+    private void sendMessageWithBundle(int msgID, Bundle bundle) {
+        Message msg = new Message();
+        msg.what = msgID;
+        if (bundle != null) {
+            msg.setData(bundle);
+        }
+        mHandler.sendMessage(msg);
     }
 
     private void setupSpinAnimation() {
@@ -381,7 +418,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
 
     private void getMovieDetail(String imdbId) {
         if (!TextUtils.isEmpty(imdbId)) {
-            OmdbRestClient.getInstance().getMovieDetailApi(new ProgressSubscriber<ImdbInfo>(onGetMovieDetailHandler, mContext, true, true),
+            OmdbRestClient.getInstance().getMovieDetailApi(new ProgressSubscriber<ImdbInfo>(onGetMovieDetailHandler, mContext, false, false),
                     imdbId);
         }
     }
@@ -396,6 +433,59 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                     mListener.onShowFragment(fragment, false);
                 }
             });
+        }
+    }
+
+    private void startSpinWheel(){
+        if(spinWheel != null) {
+            spinWheel.startAnimation(animation);
+        }
+    }
+
+    private void handleMessage(Message message) {
+        switch (message.what) {
+            case MSG_SEARCH_HERO_MOVIE: {
+                Bundle bundle = message.getData();
+                String hero = bundle.getString(Constants.BUNDLE_STRING_HERO);
+                String imgUrl = bundle.getString(Constants.BUNDLE_STRING_URL);
+
+                if(startSpin != null) {
+                    startSpin.setEnabled(false);
+                }
+                if(heroName != null) {
+                    heroName.setText(hero);
+                }
+                if(heroImage!= null) {
+                    Glide.with(mContext).load(imgUrl).asBitmap().centerCrop().into(new BitmapImageViewTarget(heroImage) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable circularBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
+                            circularBitmapDrawable.setCircular(true);
+                            heroImage.setImageDrawable(circularBitmapDrawable);
+                        }
+                    });
+                }
+                startSpinWheel();
+                getMovieList(hero);
+            }
+            break;
+        }
+    }
+
+    static class CustomHandler extends Handler {
+        WeakReference<MoviePickFragment> mFrag;
+
+        CustomHandler(MoviePickFragment aFragment) {
+            mFrag = new WeakReference<>(aFragment);
+        }
+
+        @Override
+        public void handleMessage(Message message) {
+            MoviePickFragment theFrag = mFrag.get();
+            if (theFrag != null) {
+                theFrag.handleMessage(message);
+            }
         }
     }
 }

@@ -21,22 +21,18 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/heroImage"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:src="@drawable/spider" />
 
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/heroName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/image"
-                android:background="#1976D2"
-                android:gravity="center_horizontal"
+                android:layout_below="@+id/heroImage"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp"
-                android:text="name"
-                android:textColor="#ffffff"
                 android:textSize="13sp" />
 
         </RelativeLayout>
