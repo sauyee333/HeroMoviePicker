@@ -174,15 +174,15 @@
 
                         <RelativeLayout
                             android:id="@+id/btnCharacter"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center">
 
                             <ImageView
                                 android:id="@+id/heroImage"
-                                android:layout_width="120dp"
-                                android:layout_height="90dp"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
                                 android:src="@drawable/spider" />
 
                             <TextView
@@ -194,7 +194,6 @@
                                 android:paddingTop="8dp"
                                 android:text="name"
                                 android:textSize="13sp" />
-
                         </RelativeLayout>
 
                         <View
@@ -202,16 +201,29 @@
                             android:layout_height="match_parent"
                             android:background="#e1e1e1" />
 
-                        <ImageView
+                        <RelativeLayout
                             android:id="@+id/btnHome"
                             android:layout_width="0dp"
-                            android:layout_height="20dp"
-                            android:layout_gravity="center"
-                            android:layout_margin="15dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:src="@drawable/ic_share_grey" />
-                    </LinearLayout>
+                            android:gravity="center">
 
+                            <ImageView
+                                android:id="@+id/homeImage"
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
+                                android:src="@drawable/ic_menu_home" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/homeImage"
+                                android:paddingBottom="8dp"
+                                android:paddingTop="8dp"
+                                android:text="Home"
+                                android:textSize="13sp" />
+                        </RelativeLayout>
+                    </LinearLayout>
                 </RelativeLayout>
 
                 <LinearLayout

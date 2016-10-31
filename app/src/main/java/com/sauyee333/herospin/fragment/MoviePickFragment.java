@@ -29,6 +29,7 @@ import com.sauyee333.herospin.network.omdb.model.searchapi.MovieInfo;
 import com.sauyee333.herospin.network.omdb.model.searchapi.SearchInfo;
 import com.sauyee333.herospin.network.omdb.rest.OmdbRestClient;
 import com.sauyee333.herospin.utils.Constants;
+import com.sauyee333.herospin.utils.SysUtility;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -90,7 +91,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                                     Thumbnail thumbnail = results1.getThumbnail();
                                     String imgUrl;
                                     if (thumbnail != null) {
-                                        imgUrl = generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_PORTRAIT_MEDIUM, thumbnail.getExtension());
+                                        imgUrl = SysUtility.generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_PORTRAIT_MEDIUM, thumbnail.getExtension());
 //                                        _Debug("imgUrl: (" + imgUrl + ")");
 
                                         if (chosenIndex < 0 && !imgUrl.contains(getResources().getString(R.string.imageNotAvailable))) {
@@ -212,7 +213,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                 getMovieList(search);
             }
             mCharacterResults = null;
-        }else {
+        } else {
             initGetCharacterTotal();
         }
         return view;
@@ -263,7 +264,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         }
     }
 
-    private void setupSpinAnimation(){
+    private void setupSpinAnimation() {
         animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_rotate);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -370,15 +371,6 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         }
         return hash;
     }
-
-    private String generateImageUrl(String path, String variant, String extension) {
-        String imageUrl = "";
-        if (!TextUtils.isEmpty(path) && !TextUtils.isEmpty(extension) && !TextUtils.isEmpty(variant)) {
-            imageUrl = path + "/" + variant + "." + extension;
-        }
-        return imageUrl;
-    }
-
 
     private void getMovieList(String search) {
         if (!TextUtils.isEmpty(search)) {
