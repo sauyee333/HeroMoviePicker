@@ -33,14 +33,6 @@
                         android:layout_gravity="center_horizontal"
                         android:adjustViewBounds="true"
                         android:visibility="visible" />
-
-                    <ImageView
-                        android:id="@+id/blurredPoster"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:adjustViewBounds="true"
-                        android:visibility="visible" />
                 </RelativeLayout>
 
                 <android.support.v7.widget.Toolbar
@@ -62,47 +54,6 @@
                         android:layout_marginRight="0dp"
                         android:layout_marginTop="0dp">
 
-                        <LinearLayout
-                            android:id="@+id/assetTopTitleContainer"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="50dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_toLeftOf="@+id/btnPlayTop"
-                            android:layout_toStartOf="@+id/btnPlayTop"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/assetTitleTop"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="marquee"
-                                android:marqueeRepeatLimit="marquee_forever"
-                                android:shadowColor="@android:color/black"
-                                android:shadowDx="1"
-                                android:shadowDy="1"
-                                android:shadowRadius="20"
-                                android:singleLine="true"
-                                android:textAlignment="center"
-                                android:textColor="@android:color/white"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/descriptionText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:ellipsize="marquee"
-                                android:marqueeRepeatLimit="marquee_forever"
-                                android:shadowColor="@android:color/black"
-                                android:shadowDx="1"
-                                android:shadowDy="1"
-                                android:shadowRadius="20"
-                                android:singleLine="true"
-                                android:textColor="@android:color/white" />
-                        </LinearLayout>
-
                         <ImageView
                             android:id="@+id/btnPlayTop"
                             android:layout_width="30dp"
@@ -121,14 +72,15 @@
                             android:layout_alignParentBottom="true"
                             android:background="@android:color/black"
                             android:gravity="center_vertical"
-                            android:paddingLeft="16dp"
+                            android:paddingLeft="35dp"
                             android:paddingRight="16dp"
-                            android:textColor="@android:color/white" />
+                            android:singleLine="true"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp" />
                     </RelativeLayout>
                 </android.support.v7.widget.Toolbar>
             </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
-
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/scroll"
@@ -145,19 +97,12 @@
                 android:layout_marginBottom="50dp"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/duration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:textColor="@android:color/black" />
-
                 <RelativeLayout
                     android:id="@+id/posterFooter"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
+                    android:layout_marginTop="32dp"
                     android:orientation="vertical"
                     android:tag="sticky">
 
@@ -192,7 +137,6 @@
                                 android:layout_below="@+id/heroImage"
                                 android:paddingBottom="8dp"
                                 android:paddingTop="8dp"
-                                android:text="name"
                                 android:textSize="13sp" />
                         </RelativeLayout>
 
@@ -229,146 +173,133 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/default_margin"
-                    android:layout_marginRight="@dimen/default_margin"
-                    android:orientation="horizontal"
-                    android:paddingBottom="@dimen/default_margin_half"
-                    android:paddingTop="@dimen/default_margin_half">
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/default_margin"
+                        android:layout_marginRight="@dimen/default_margin"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/default_margin_half"
+                        android:paddingTop="@dimen/default_margin_half">
+
+                        <TextView
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/actors"
+                            android:textColor="@color/darkPrimary"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/actors"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/darkPrimary" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/default_margin"
+                        android:layout_marginRight="@dimen/default_margin"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/default_margin_half"
+                        android:paddingTop="@dimen/default_margin_half">
+
+                        <TextView
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/genre"
+                            android:textColor="@color/darkPrimary"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/genre"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/darkPrimary" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/default_margin"
+                        android:layout_marginRight="@dimen/default_margin"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/default_margin_half"
+                        android:paddingTop="@dimen/default_margin_half">
+
+                        <TextView
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/language"
+                            android:textColor="@color/darkPrimary"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/language"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/darkPrimary" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/default_margin"
+                        android:layout_marginRight="@dimen/default_margin"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/default_margin_half"
+                        android:paddingTop="@dimen/default_margin_half">
+
+                        <TextView
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/year"
+                            android:textColor="@color/darkPrimary"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/year"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/darkPrimary" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/default_margin"
+                        android:layout_marginRight="@dimen/default_margin"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/default_margin"
+                        android:paddingTop="@dimen/default_margin_half">
+
+                        <TextView
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/imdbRating"
+                            android:textColor="@color/darkPrimary"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/imdb"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/darkPrimary" />
+                    </LinearLayout>
 
                     <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/actors"
-                        android:textColor="@color/darkPrimary" />
-
-                    <TextView
-                        android:id="@+id/actors"
+                        android:id="@+id/plot"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/default_margin"
+                        android:layout_marginBottom="30dp"
+                        android:lineSpacingMultiplier="1.4"
                         android:textColor="@color/darkPrimary" />
                 </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/default_margin"
-                    android:layout_marginRight="@dimen/default_margin"
-                    android:orientation="horizontal"
-                    android:paddingBottom="@dimen/default_margin_half"
-                    android:paddingTop="@dimen/default_margin_half">
-
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/genre"
-                        android:textColor="@color/darkPrimary" />
-
-                    <TextView
-                        android:id="@+id/genre"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/darkPrimary" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/default_margin"
-                    android:layout_marginRight="@dimen/default_margin"
-                    android:orientation="horizontal"
-                    android:paddingBottom="@dimen/default_margin_half"
-                    android:paddingTop="@dimen/default_margin_half">
-
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/language"
-                        android:textColor="@color/darkPrimary" />
-
-                    <TextView
-                        android:id="@+id/language"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/darkPrimary" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/default_margin"
-                    android:layout_marginRight="@dimen/default_margin"
-                    android:orientation="horizontal"
-                    android:paddingBottom="@dimen/default_margin_half"
-                    android:paddingTop="@dimen/default_margin_half">
-
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/year"
-                        android:textColor="@color/darkPrimary" />
-
-                    <TextView
-                        android:id="@+id/year"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/darkPrimary" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="@dimen/default_margin"
-                    android:layout_marginRight="@dimen/default_margin"
-                    android:orientation="horizontal"
-                    android:paddingBottom="@dimen/default_margin"
-                    android:paddingTop="@dimen/default_margin_half">
-
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/imdbRating"
-                        android:textColor="@color/darkPrimary" />
-
-                    <TextView
-                        android:id="@+id/imdb"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/darkPrimary" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/plot"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/default_margin"
-                    android:layout_marginBottom="5dp"
-                    android:lineSpacingMultiplier="1.4"
-                    android:textColor="@color/darkPrimary" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/lightSecondary" />
-
-                <TextView
-                    android:id="@+id/lblRelatedClips"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/default_margin"
-                    android:text="Related Clips"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/relatedListView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/default_margin_half">
-
-                </android.support.v7.widget.RecyclerView>
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
 
