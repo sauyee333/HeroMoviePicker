@@ -81,16 +81,13 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     private MainListener mListener;
     private Animation animation;
 
-    private int mCharacterListTotal = 0;
     private int mCharacterOffset = -1;
-    private int mCharacterIndex = -1;
-    private CharacterInfo mCharacterInfo;
+    private String mHeroImgUrl = "";
 
     private SubscribeOnResponseListener onGetCharacterListHandler = new SubscribeOnResponseListener<CharacterInfo>() {
         @Override
         public void onNext(CharacterInfo characterInfo) {
             if (characterInfo != null) {
-                mCharacterInfo = characterInfo;
                 Data data = characterInfo.getData();
                 if (data != null) {
 
@@ -98,10 +95,12 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                     if (results != null) {
 
                         if (mCharacterOffset == -1) {
-                            mCharacterListTotal = data.getTotal();
-                            int limit = 1;
-                            mCharacterOffset = new Random().nextInt(mCharacterListTotal);
-                            getCharacterList(limit, mCharacterOffset);
+                            int total = data.getTotal();
+                            if (total > 0) {
+                                int limit = 1;
+                                mCharacterOffset = new Random().nextInt(total);
+                                getCharacterList(limit, mCharacterOffset);
+                            }
                         } else {
                             int totalInt = results.length;
                             if (totalInt > 0) {
@@ -109,7 +108,8 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                                 Thumbnail thumbnail = results1.getThumbnail();
                                 if (thumbnail != null) {
                                     String imgUrl = SysUtility.generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_PORTRAIT_MEDIUM, thumbnail.getExtension());
-                                    if(heroImage!= null) {
+                                    if (heroImage != null && !TextUtils.isEmpty(imgUrl)) {
+                                        mHeroImgUrl = imgUrl;
                                         Glide.with(mContext).load(imgUrl).asBitmap().centerCrop().into(new BitmapImageViewTarget(heroImage) {
                                             @Override
                                             protected void setResource(Bitmap resource) {
@@ -122,11 +122,11 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                                     }
                                 }
                                 String heroSearchStr = results1.getName();
-                                if(heroName != null) {
+                                if (heroName != null) {
                                     heroName.setText(heroSearchStr);
                                 }
                                 showLoadingInfo(mContext.getResources().getString(R.string.fetchMovie));
-                                if(!TextUtils.isEmpty(heroSearchStr)) {
+                                if (!TextUtils.isEmpty(heroSearchStr)) {
                                     getMovieList(heroSearchStr);
                                 }
                             } else {
@@ -198,7 +198,13 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                     displayErrorMessage(imdbInfo.getError());
                 } else {
                     Bundle bundle = new Bundle();
-                    bundle.putString(Constants.BUNDLE_STRING_CONTENTS, new Gson().toJson(imdbInfo));
+                    if(!TextUtils.isEmpty(mHeroImgUrl)) {
+                        bundle.putString(Constants.BUNDLE_STRING_URL, mHeroImgUrl);
+                    }
+                    if(heroName!= null) {
+                        bundle.putString(Constants.BUNDLE_STRING_HERO, heroName.getText().toString());
+                    }
+                    bundle.putString(Constants.BUNDLE_STRING_MOVIE_INFO, new Gson().toJson(imdbInfo));
                     loadMovieDetailPage(bundle);
                 }
             }
@@ -244,17 +250,6 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         startSpinWheel();
         showLoadingInfo(mContext.getResources().getString(R.string.fetchSuperHero));
         initGetCharacterTotal();
-
-        CharacterInfo characterInfo = mCharacterInfo;
-        if (characterInfo != null) {
-            Data data = characterInfo.getData();
-            if (data != null) {
-                Results[] results = data.getResults();
-                if (results != null) {
-                    getMovieList(results[mCharacterIndex].getName());
-                }
-            }
-        }
     }
 
     @OnClick(R.id.stopSpin)
@@ -325,10 +320,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     }
 
     private void resetCharacterInfo() {
-        mCharacterListTotal = 0;
         mCharacterOffset = -1;
-        mCharacterIndex = -1;
-        mCharacterInfo = null;
     }
 
     private void initGetCharacterTotal() {
@@ -441,7 +433,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     }
 
     private void showLoadingInfo(String input) {
-        if(!TextUtils.isEmpty(input)) {
+        if (!TextUtils.isEmpty(input)) {
             fetchInfo.setText(input);
         }
         if (loadingInfo != null) {

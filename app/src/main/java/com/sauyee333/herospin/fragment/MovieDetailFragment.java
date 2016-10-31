@@ -155,9 +155,27 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            String jsonMyObject = bundle.getString(Constants.BUNDLE_STRING_CONTENTS);
-            mImdbInfo = new Gson().fromJson(jsonMyObject, ImdbInfo.class);
+            String hero = bundle.getString(Constants.BUNDLE_STRING_HERO);
+            String imgUrl = bundle.getString(Constants.BUNDLE_STRING_URL);
+
+            if (heroName != null) {
+                heroName.setText(hero);
+            }
+            String movieInfo = bundle.getString(Constants.BUNDLE_STRING_MOVIE_INFO);
+            mImdbInfo = new Gson().fromJson(movieInfo, ImdbInfo.class);
             updateMovieDetail(mImdbInfo);
+
+            if (heroImage != null) {
+                Glide.with(mContext).load(imgUrl).asBitmap().centerCrop().into(new BitmapImageViewTarget(heroImage) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        heroImage.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
+            }
         }
 
         if (mImdbInfo == null) {
