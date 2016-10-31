@@ -42,7 +42,7 @@ import butterknife.OnClick;
  * Created by sauyee on 29/10/16.
  */
 
-public class MoviePickFragment extends Fragment {
+public class MoviePickFragment extends Fragment implements HeroListFragment.AddCharacterListener {
 
     @Bind(R.id.spinWheel)
     ImageView spinWheel;
@@ -50,6 +50,7 @@ public class MoviePickFragment extends Fragment {
     @Bind(R.id.startSpin)
     Button startSpin;
 
+    private Activity mActivity;
     private Context mContext;
     private MainListener mListener;
     private Animation animation;
@@ -59,6 +60,7 @@ public class MoviePickFragment extends Fragment {
     private int mCharacterLimit = 0;
     private int mCharacterIndex = -1;
     private CharacterInfo mCharacterInfo;
+    private Results mCharacterResults;
 
     private SubscribeOnResponseListener onGetCharacterListHandler = new SubscribeOnResponseListener<CharacterInfo>() {
         @Override
@@ -195,6 +197,7 @@ public class MoviePickFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, view);
+        mActivity = getActivity();
         mContext = getContext();
         setupSpinAnimation();
 
@@ -203,8 +206,15 @@ public class MoviePickFragment extends Fragment {
 //        getMovieDetail("tt1922373");
 
 //        generateHash("1477755055051", getResources().getString(R.string.marvelPrivateKey), getResources().getString(R.string.marvelPublicKey));
-        initGetCharacterTotal();
-
+        if (mCharacterResults != null) {
+            String search = mCharacterResults.getName();
+            if (!TextUtils.isEmpty(search)) {
+                getMovieList(search);
+            }
+            mCharacterResults = null;
+        }else {
+            initGetCharacterTotal();
+        }
         return view;
     }
 
@@ -239,6 +249,18 @@ public class MoviePickFragment extends Fragment {
     public void stopAnim() {
         spinWheel.clearAnimation();
         spinWheel.animate().cancel();
+    }
+
+    @OnClick(R.id.btnCharacter)
+    public void chooseCharacter() {
+        loadHeroListFragment();
+    }
+
+    @Override
+    public void confirmAddCharacter(Results results) {
+        if (results != null) {
+            mCharacterResults = results;
+        }
     }
 
     private void setupSpinAnimation(){
@@ -291,7 +313,7 @@ public class MoviePickFragment extends Fragment {
         String limitStr = (limit <= 0) ? null : Integer.toString(limit);
         String offsetStr = (limit <= 0 && offset <= 0) ? null : Integer.toString(offset);
         String modifiedSince = Constants.MARVEL_QUERY_MODIFIED_SINCE_DATE;
-        MarvelRestClient.getInstance().getCharacterListApi(new ProgressSubscriber<CharacterInfo>(onGetCharacterListHandler, mContext, true, true),
+        MarvelRestClient.getInstance().getCharacterListApi(new ProgressSubscriber<CharacterInfo>(onGetCharacterListHandler, mContext, false, false),
                 apiKey, timeStamp, hash,
                 null, null, modified,
                 limitStr, offsetStr, modifiedSince);
@@ -360,7 +382,7 @@ public class MoviePickFragment extends Fragment {
 
     private void getMovieList(String search) {
         if (!TextUtils.isEmpty(search)) {
-            OmdbRestClient.getInstance().getMovieListApi(new ProgressSubscriber<MovieInfo>(onGetMovieListHandler, mContext, true, true),
+            OmdbRestClient.getInstance().getMovieListApi(new ProgressSubscriber<MovieInfo>(onGetMovieListHandler, mContext, false, false),
                     search);
         }
     }
@@ -369,6 +391,19 @@ public class MoviePickFragment extends Fragment {
         if (!TextUtils.isEmpty(imdbId)) {
             OmdbRestClient.getInstance().getMovieDetailApi(new ProgressSubscriber<ImdbInfo>(onGetMovieDetailHandler, mContext, true, true),
                     imdbId);
+        }
+    }
+
+    private void loadHeroListFragment() {
+        if (mActivity != null) {
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Fragment fragment = new HeroListFragment();
+                    fragment.setTargetFragment(MoviePickFragment.this, 0);
+                    mListener.onShowFragment(fragment, false);
+                }
+            });
         }
     }
 }
