@@ -154,8 +154,8 @@
 
                             <ImageView
                                 android:id="@+id/homeImage"
-                                android:layout_width="70dp"
-                                android:layout_height="70dp"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
                                 android:src="@drawable/ic_menu_home" />
 
                             <TextView
@@ -171,6 +171,8 @@
                 </RelativeLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/movieInfo"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
@@ -298,6 +300,50 @@
                         android:layout_margin="@dimen/default_margin"
                         android:layout_marginBottom="30dp"
                         android:lineSpacingMultiplier="1.4"
+                        android:textSize="15sp"
+                        android:textColor="@color/darkPrimary" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/errorInfo"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/errorTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/default_margin"
+                        android:layout_marginBottom="30dp"
+                        android:lineSpacingMultiplier="1.4"
+                        android:textStyle="bold"
+                        android:textAllCaps="true"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:text="@string/noMovieTitle"
+                        android:textColor="@color/darkPrimary" />
+
+                    <TextView
+                        android:id="@+id/errorMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:lineSpacingMultiplier="1.4"
+                        android:text="@string/noMovieDescription"
+                        android:textColor="@color/darkPrimary" />
+
+                    <TextView
+                        android:id="@+id/tryAgain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:lineSpacingMultiplier="1.4"
+                        android:text="@string/tryAgain"
                         android:textColor="@color/darkPrimary" />
                 </LinearLayout>
             </LinearLayout>
@@ -306,14 +352,14 @@
         <view
             android:id="@+id/btnSpin"
             class="mbanje.kurt.fabbutton.FabButton"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:layout_margin="16dp"
             android:clickable="true"
             android:color="@android:color/holo_red_light"
             android:indeterminate="true"
             android:max="100"
-            android:src="@drawable/ic_fab_play"
+            android:src="@drawable/ic_spin_wheel"
             app:fbb_autoStart="true"
             app:fbb_endBitmap="@drawable/ic_fab_complete"
             app:fbb_hideProgressOnComplete="true"

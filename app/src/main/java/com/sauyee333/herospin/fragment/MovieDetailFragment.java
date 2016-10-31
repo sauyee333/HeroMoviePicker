@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,6 +78,12 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
 
     @Bind(R.id.heroImage)
     ImageView heroImage;
+
+    @Bind(R.id.movieInfo)
+    LinearLayout movieInfo;
+
+    @Bind(R.id.errorInfo)
+    LinearLayout errorInfo;
 
     private final CustomHandler mHandler = new CustomHandler(this);
     private Activity mActivity;
@@ -249,6 +256,12 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
     }
 
     private void displayErrorMessage(String msg) {
+        if(movieInfo!= null) {
+            movieInfo.setVisibility(View.GONE);
+        }
+        if(errorInfo!=null){
+            errorInfo.setVisibility(View.VISIBLE);
+        }
         Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
     }
 
@@ -261,7 +274,12 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
             imdb.setText(imdbInfo.getImdbRating());
             plot.setText(imdbInfo.getPlot());
             title.setText(imdbInfo.getTitle());
-
+            if(movieInfo!= null) {
+                movieInfo.setVisibility(View.VISIBLE);
+            }
+            if(errorInfo!=null){
+                errorInfo.setVisibility(View.GONE);
+            }
             Glide.with(mContext)
                     .load(imdbInfo.getPoster())
                     .into(poster);

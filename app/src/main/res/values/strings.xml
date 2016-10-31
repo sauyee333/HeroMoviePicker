@@ -13,4 +13,8 @@
     <string name="language">language</string>
     <string name="imdbRating">Imdb</string>
     <string name="year">Year</string>
+    <string name="noMovieTitle">Movie not found</string>
+    <string name="noMovieDescription">It seems the SuperHero has taken a break.</string>
+    <string name="tryAgain">Try one of the options instead.</string>
+
 </resources>
