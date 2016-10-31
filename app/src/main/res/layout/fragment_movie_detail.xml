@@ -135,6 +135,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/heroImage"
+                                android:ellipsize="end"
+                                android:maxLength="10"
                                 android:paddingBottom="8dp"
                                 android:paddingTop="8dp"
                                 android:textSize="13sp" />
@@ -171,11 +173,11 @@
                 </RelativeLayout>
 
                 <LinearLayout
-                    android:visibility="gone"
                     android:id="@+id/movieInfo"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -300,16 +302,16 @@
                         android:layout_margin="@dimen/default_margin"
                         android:layout_marginBottom="30dp"
                         android:lineSpacingMultiplier="1.4"
-                        android:textSize="15sp"
-                        android:textColor="@color/darkPrimary" />
+                        android:textColor="@color/darkPrimary"
+                        android:textSize="15sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/errorInfo"
-                    android:gravity="center"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/errorTitle"
@@ -317,21 +319,21 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/default_margin"
                         android:layout_marginBottom="30dp"
-                        android:lineSpacingMultiplier="1.4"
-                        android:textStyle="bold"
-                        android:textAllCaps="true"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
+                        android:lineSpacingMultiplier="1.4"
                         android:text="@string/noMovieTitle"
-                        android:textColor="@color/darkPrimary" />
+                        android:textAllCaps="true"
+                        android:textColor="@color/darkPrimary"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/errorMessage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
-                        android:layout_marginBottom="16dp"
                         android:lineSpacingMultiplier="1.4"
                         android:text="@string/noMovieDescription"
                         android:textColor="@color/darkPrimary" />

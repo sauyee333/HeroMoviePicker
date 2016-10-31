@@ -17,6 +17,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,6 +69,12 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     @Bind(R.id.heroImage)
     ImageView heroImage;
 
+    @Bind(R.id.loadingInfo)
+    LinearLayout loadingInfo;
+
+    @Bind(R.id.fetchInfo)
+    TextView fetchInfo;
+
     private final CustomHandler mHandler = new CustomHandler(this);
     private Activity mActivity;
     private Context mContext;
@@ -76,10 +83,8 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
 
     private int mCharacterListTotal = 0;
     private int mCharacterOffset = -1;
-    private int mCharacterLimit = 0;
     private int mCharacterIndex = -1;
     private CharacterInfo mCharacterInfo;
-    private boolean mConfirmHero = false;
 
     private SubscribeOnResponseListener onGetCharacterListHandler = new SubscribeOnResponseListener<CharacterInfo>() {
         @Override
@@ -94,47 +99,42 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
 
                         if (mCharacterOffset == -1) {
                             mCharacterListTotal = data.getTotal();
-//                            _Debug("mCharacterListTotal: " + mCharacterListTotal);
-                            //generate random number and get a character
-                            int limit = 10;
+                            int limit = 1;
                             mCharacterOffset = new Random().nextInt(mCharacterListTotal);
                             getCharacterList(limit, mCharacterOffset);
                         } else {
-                            mCharacterLimit = results.length;
-                            mCharacterInfo = characterInfo;
-                            if (mCharacterLimit > 0) {
-                                int chosenIndex = -1;
-                                for (int i = 0; i < mCharacterLimit; i++) {
-                                    Results results1 = results[i];
-                                    Thumbnail thumbnail = results1.getThumbnail();
-                                    String imgUrl;
-                                    if (thumbnail != null) {
-                                        imgUrl = SysUtility.generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_PORTRAIT_MEDIUM, thumbnail.getExtension());
-//                                        _Debug("imgUrl: (" + imgUrl + ")");
-
-                                        if (chosenIndex < 0 && !imgUrl.contains(getResources().getString(R.string.imageNotAvailable))) {
-                                            chosenIndex = i;
-                                        }
+                            int totalInt = results.length;
+                            if (totalInt > 0) {
+                                Results results1 = results[0];
+                                Thumbnail thumbnail = results1.getThumbnail();
+                                if (thumbnail != null) {
+                                    String imgUrl = SysUtility.generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_PORTRAIT_MEDIUM, thumbnail.getExtension());
+                                    if(heroImage!= null) {
+                                        Glide.with(mContext).load(imgUrl).asBitmap().centerCrop().into(new BitmapImageViewTarget(heroImage) {
+                                            @Override
+                                            protected void setResource(Bitmap resource) {
+                                                RoundedBitmapDrawable circularBitmapDrawable =
+                                                        RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
+                                                circularBitmapDrawable.setCircular(true);
+                                                heroImage.setImageDrawable(circularBitmapDrawable);
+                                            }
+                                        });
                                     }
-//                                    _Debug(results1.getName() + " " + results1.getDescription());
-//                                    _Debug(results1.getId() + " " + results1.getResourceURI());
                                 }
-//search movie for chosen character
-                                if (chosenIndex >= 0) {
-                                    mCharacterIndex = chosenIndex;
-//                                    _Debug("results[chosenIndex].getName(): " + results[chosenIndex].getName());
-//                                    getMovieList(results[chosenIndex].getName());
-                                } else {
-                                    //shows no image error
+                                String heroSearchStr = results1.getName();
+                                if(heroName != null) {
+                                    heroName.setText(heroSearchStr);
+                                }
+                                showLoadingInfo(mContext.getResources().getString(R.string.fetchMovie));
+                                if(!TextUtils.isEmpty(heroSearchStr)) {
+                                    getMovieList(heroSearchStr);
                                 }
                             } else {
-                                resetCharacterInfo();
-                                //show get character list error
+                                //not found
+//                    search again
                             }
                         }
                     }
-
-
                 }
             }
         }
@@ -177,7 +177,6 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                         } else {
                             //not found
 //                    search again
-
                         }
                     }
                 }
@@ -194,7 +193,6 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         @Override
         public void onNext(ImdbInfo imdbInfo) {
             String response = imdbInfo.getResponse();
-            stopAnim();
             if (!TextUtils.isEmpty(response)) {
                 if (response.equals("False")) {
                     displayErrorMessage(imdbInfo.getError());
@@ -204,6 +202,8 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                     loadMovieDetailPage(bundle);
                 }
             }
+            stopAnim();
+            hideLoadingInfo();
         }
 
         @Override
@@ -225,11 +225,6 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
 //        getMovieDetail("tt1922373");
 
 //        generateHash("1477755055051", getResources().getString(R.string.marvelPrivateKey), getResources().getString(R.string.marvelPublicKey));
-        if (mConfirmHero) {
-            mConfirmHero = false;
-        } else {
-            initGetCharacterTotal();
-        }
         return view;
     }
 
@@ -247,6 +242,9 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     @OnClick(R.id.startSpin)
     public void startAnim() {
         startSpinWheel();
+        showLoadingInfo(mContext.getResources().getString(R.string.fetchSuperHero));
+        initGetCharacterTotal();
+
         CharacterInfo characterInfo = mCharacterInfo;
         if (characterInfo != null) {
             Data data = characterInfo.getData();
@@ -257,15 +255,15 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                 }
             }
         }
-
     }
 
     @OnClick(R.id.stopSpin)
     public void stopAnim() {
-        if(spinWheel != null) {
+        if (spinWheel != null) {
             spinWheel.clearAnimation();
             spinWheel.animate().cancel();
         }
+        hideLoadingInfo();
     }
 
     @OnClick(R.id.btnCharacter)
@@ -278,7 +276,6 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         if (results != null) {
             String hero = results.getName();
             if (!TextUtils.isEmpty(hero)) {
-                mConfirmHero = true;
                 Bundle bundle = new Bundle();
                 Thumbnail thumbnail = results.getThumbnail();
                 if (thumbnail != null) {
@@ -330,7 +327,6 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     private void resetCharacterInfo() {
         mCharacterListTotal = 0;
         mCharacterOffset = -1;
-        mCharacterLimit = 0;
         mCharacterIndex = -1;
         mCharacterInfo = null;
     }
@@ -370,6 +366,8 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     }
 
     private void displayErrorMessage(String msg) {
+        stopAnim();
+        hideLoadingInfo();
         Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
     }
 
@@ -436,9 +434,24 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         }
     }
 
-    private void startSpinWheel(){
-        if(spinWheel != null) {
+    private void startSpinWheel() {
+        if (spinWheel != null) {
             spinWheel.startAnimation(animation);
+        }
+    }
+
+    private void showLoadingInfo(String input) {
+        if(!TextUtils.isEmpty(input)) {
+            fetchInfo.setText(input);
+        }
+        if (loadingInfo != null) {
+            loadingInfo.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideLoadingInfo() {
+        if (loadingInfo != null) {
+            loadingInfo.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -449,13 +462,13 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                 String hero = bundle.getString(Constants.BUNDLE_STRING_HERO);
                 String imgUrl = bundle.getString(Constants.BUNDLE_STRING_URL);
 
-                if(startSpin != null) {
+                if (startSpin != null) {
                     startSpin.setEnabled(false);
                 }
-                if(heroName != null) {
+                if (heroName != null) {
                     heroName.setText(hero);
                 }
-                if(heroImage!= null) {
+                if (heroImage != null) {
                     Glide.with(mContext).load(imgUrl).asBitmap().centerCrop().into(new BitmapImageViewTarget(heroImage) {
                         @Override
                         protected void setResource(Bitmap resource) {
@@ -467,6 +480,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                     });
                 }
                 startSpinWheel();
+                showLoadingInfo(mContext.getResources().getString(R.string.fetchMovie));
                 getMovieList(hero);
             }
             break;

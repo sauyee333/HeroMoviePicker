@@ -7,6 +7,10 @@
 
     <string name="imageNotAvailable">image_not_available</string>
 
+    <!-- movie pick page -->
+    <string name="fetchSuperHero">Fetching SuperHero...</string>
+    <string name="fetchMovie">Fetching movie...</string>
+
     <!-- movie details page -->
     <string name="actors">Actors</string>
     <string name="genre">Genre</string>

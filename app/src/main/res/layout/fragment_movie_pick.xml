@@ -13,41 +13,68 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/spinWheel"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/btnCharacter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/loadingInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="invisible">
 
-            <ImageView
-                android:id="@+id/heroImage"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/spider" />
+            <RelativeLayout
+                android:id="@+id/btnCharacter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/heroImage"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/spider" />
+
+                <TextView
+                    android:id="@+id/heroName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/heroImage"
+                    android:ellipsize="end"
+                    android:maxLength="10"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:textSize="13sp" />
+
+            </RelativeLayout>
 
             <TextView
-                android:id="@+id/heroName"
+                android:id="@+id/fetchInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/heroImage"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                android:textSize="13sp" />
-
-        </RelativeLayout>
+                android:layout_margin="@dimen/default_margin"
+                android:layout_marginBottom="30dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@color/lightSecondary"
+                android:lineSpacingMultiplier="1.4"
+                android:text="@string/fetchMovie"
+                android:textColor="@color/darkPrimary"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/startSpin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:text="SPIN" />
 
         <Button
             android:id="@+id/stopSpin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="STOP" />
+            android:text="STOP"
+            android:visibility="gone" />
 
     </LinearLayout>
 </RelativeLayout>
