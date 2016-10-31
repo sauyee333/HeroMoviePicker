@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.sauyee333.herospin.R;
 import com.sauyee333.herospin.adapter.HeroListAdapter;
+import com.sauyee333.herospin.listener.HeroCharacterListener;
 import com.sauyee333.herospin.listener.MainListener;
 import com.sauyee333.herospin.network.ProgressSubscriber;
 import com.sauyee333.herospin.network.SubscribeOnResponseListener;
@@ -38,7 +39,7 @@ import rx.Subscriber;
  * Created by sauyee on 29/10/16.
  */
 
-public class HeroListFragment extends Fragment {
+public class HeroListFragment extends Fragment implements HeroCharacterListener {
 
     public static final int CHARACTER_COUNT_PER_PAGE = 15;
     public static final int CHARACTER_COUNT_PER_ROW = 3;
@@ -177,6 +178,17 @@ public class HeroListFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onCharacterClick(Results results) {
+        if (results != null) {
+            Thumbnail thumbnail = results.getThumbnail();
+            String imgUrl;
+            if (thumbnail != null) {
+                imgUrl = generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_PORTRAIT_MEDIUM, thumbnail.getExtension());
+            }
+        }
+    }
+
     private void setupListConfig() {
         mRecyclerListView.setHasFixedSize(true);
 
@@ -230,14 +242,7 @@ public class HeroListFragment extends Fragment {
 
     private void updateHeroList(List<Results> resultsList) {
         if (isAdded() && !isRemoving()) {
-            mAdapter = new HeroListAdapter(mContext, getActivity(), mListener, resultsList);
-            mRecyclerListView.setAdapter(mAdapter);
-        }
-    }
-
-    private void addHeroList(List<Results> resultsList) {
-        if (isAdded() && !isRemoving()) {
-            mAdapter = new HeroListAdapter(mContext, getActivity(), mListener, resultsList);
+            mAdapter = new HeroListAdapter(mContext, getActivity(), HeroListFragment.this, resultsList);
             mRecyclerListView.setAdapter(mAdapter);
         }
     }

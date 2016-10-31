@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.sauyee333.herospin.R;
-import com.sauyee333.herospin.listener.MainListener;
+import com.sauyee333.herospin.listener.HeroCharacterListener;
 import com.sauyee333.herospin.network.marvel.model.characterList.Results;
 import com.sauyee333.herospin.network.marvel.model.characterList.Thumbnail;
 import com.sauyee333.herospin.utils.Constants;
@@ -28,9 +28,9 @@ public class HeroListAdapter extends RecyclerView.Adapter<HeroListAdapter.ViewHo
     private Context mContext;
     private Activity mActivity;
     private List<Results> mHeroData;
-    private MainListener mListener;
+    private HeroCharacterListener mListener;
 
-    public HeroListAdapter(Context context, Activity activity, MainListener listener, List<Results> heroData) {
+    public HeroListAdapter(Context context, Activity activity, HeroCharacterListener listener, List<Results> heroData) {
         mContext = context;
         mActivity = activity;
         mListener = listener;
@@ -46,8 +46,16 @@ public class HeroListAdapter extends RecyclerView.Adapter<HeroListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(HeroListAdapter.ViewHolder holder, final int rowPosition) {
-        Results results = mHeroData.get(rowPosition);
+        final Results results = mHeroData.get(rowPosition);
         holder.title.setText(results.getName());
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onCharacterClick(results);
+                }
+            }
+        });
 
         Thumbnail thumbnail = results.getThumbnail();
         String imgUrl = null;
@@ -58,7 +66,6 @@ public class HeroListAdapter extends RecyclerView.Adapter<HeroListAdapter.ViewHo
         if (!TextUtils.isEmpty(imgUrl)) {
             Glide.with(mContext)
                     .load(imgUrl)
-                    .placeholder(mContext.getResources().getDrawable(R.drawable.holder_portrait_medium))
                     .into(holder.image);
         }
     }
