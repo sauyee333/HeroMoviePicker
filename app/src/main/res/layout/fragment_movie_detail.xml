@@ -173,21 +173,7 @@
                             android:background="#e1e1e1" />
 
                         <ImageView
-                            android:id="@+id/btnAdd"
-                            android:layout_width="0dp"
-                            android:layout_height="20dp"
-                            android:layout_gravity="center"
-                            android:layout_margin="15dp"
-                            android:layout_weight="1"
-                            android:visibility="visible" />
-
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="#e1e1e1" />
-
-                        <ImageView
-                            android:id="@+id/btnFavorite"
+                            android:id="@+id/btnCharacter"
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_gravity="center"
@@ -201,7 +187,7 @@
                             android:background="#e1e1e1" />
 
                         <ImageView
-                            android:id="@+id/btnShare"
+                            android:id="@+id/btnHome"
                             android:layout_width="0dp"
                             android:layout_height="20dp"
                             android:layout_gravity="center"

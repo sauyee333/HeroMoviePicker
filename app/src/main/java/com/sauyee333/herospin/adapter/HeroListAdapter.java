@@ -66,6 +66,7 @@ public class HeroListAdapter extends RecyclerView.Adapter<HeroListAdapter.ViewHo
         if (!TextUtils.isEmpty(imgUrl)) {
             Glide.with(mContext)
                     .load(imgUrl)
+                    .placeholder(mContext.getResources().getDrawable(R.drawable.holder_portrait_medium))
                     .into(holder.image);
         }
     }

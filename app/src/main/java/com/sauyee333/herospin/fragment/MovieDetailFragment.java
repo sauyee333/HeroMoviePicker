@@ -18,7 +18,10 @@ import com.sauyee333.herospin.R;
 import com.sauyee333.herospin.listener.MainListener;
 import com.sauyee333.herospin.network.ProgressSubscriber;
 import com.sauyee333.herospin.network.SubscribeOnResponseListener;
+import com.sauyee333.herospin.network.marvel.model.characterList.Results;
 import com.sauyee333.herospin.network.omdb.model.imdb.ImdbInfo;
+import com.sauyee333.herospin.network.omdb.model.searchapi.MovieInfo;
+import com.sauyee333.herospin.network.omdb.model.searchapi.SearchInfo;
 import com.sauyee333.herospin.network.omdb.rest.OmdbRestClient;
 import com.sauyee333.herospin.utils.Constants;
 
@@ -30,7 +33,7 @@ import butterknife.OnClick;
  * Created by sauyee on 29/10/16.
  */
 
-public class MovieDetailFragment extends Fragment {
+public class MovieDetailFragment extends Fragment implements HeroListFragment.AddCharacterListener {
 
     @Bind(R.id.actors)
     TextView actors;
@@ -56,10 +59,12 @@ public class MovieDetailFragment extends Fragment {
     @Bind(R.id.title)
     TextView title;
 
+    private Activity mActivity;
     private Context mContext;
     private MainListener mListener;
 
     private ImdbInfo mImdbInfo;
+    private Results mCharacterResults;
 
     private SubscribeOnResponseListener onGetMovieDetailHandler = new SubscribeOnResponseListener<ImdbInfo>() {
         @Override
@@ -81,11 +86,45 @@ public class MovieDetailFragment extends Fragment {
         }
     };
 
+    private SubscribeOnResponseListener onGetMovieListHandler = new SubscribeOnResponseListener<MovieInfo>() {
+        @Override
+        public void onNext(MovieInfo movieInfo) {
+            if (movieInfo != null) {
+                String response = movieInfo.getResponse();
+                if (!TextUtils.isEmpty(response)) {
+                    if (response.equals("False")) {
+                        displayErrorMessage(movieInfo.getError());
+                    } else {
+                        String total = movieInfo.getTotalResults();
+                        int totalInt = Integer.parseInt(total);
+                        if (totalInt > 0) {
+                            SearchInfo[] searchInfo = movieInfo.getSearch();
+                            SearchInfo searchInfo1 = searchInfo[0];
+                            String imdb = searchInfo1.getImdbID();
+                            if (!TextUtils.isEmpty(imdb)) {
+                                getMovieDetail(imdb);
+                            }
+                        } else {
+                            //not found
+//                    search again
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onError(String errorMsg) {
+            displayErrorMessage(errorMsg);
+        }
+    };
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movie_detail, container, false);
-        ButterKnife.bind(this, view);
+        mActivity = getActivity();
         mContext = getContext();
+        ButterKnife.bind(this, view);
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
@@ -94,7 +133,12 @@ public class MovieDetailFragment extends Fragment {
             updateMovieDetail(mImdbInfo);
         }
 
-        if (mImdbInfo == null) {
+        if (mCharacterResults != null) {
+            String search = mCharacterResults.getName();
+            if (!TextUtils.isEmpty(search)) {
+                getMovieList(search);
+            }
+        } else if (mImdbInfo == null) {
             getMovieDetail("tt1922373");
         }
         return view;
@@ -111,10 +155,39 @@ public class MovieDetailFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
     @OnClick(R.id.btnClose)
     public void closePage() {
         if (mListener != null) {
             mListener.onFragmentBackPress();
+        }
+    }
+
+    @OnClick(R.id.btnCharacter)
+    public void chooseCharacter() {
+        loadHeroListFragment();
+    }
+
+    @Override
+    public void confirmAddCharacter(Results results) {
+        if (results != null) {
+            mCharacterResults = results;
+        }
+    }
+
+    private void getMovieList(String search) {
+        if (!TextUtils.isEmpty(search)) {
+            OmdbRestClient.getInstance().getMovieListApi(new ProgressSubscriber<MovieInfo>(onGetMovieListHandler, mContext, true, true),
+                    search);
         }
     }
 
@@ -142,6 +215,19 @@ public class MovieDetailFragment extends Fragment {
             Glide.with(mContext)
                     .load(imdbInfo.getPoster())
                     .into(poster);
+        }
+    }
+
+    private void loadHeroListFragment() {
+        if (mActivity != null) {
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Fragment fragment = new HeroListFragment();
+                    fragment.setTargetFragment(MovieDetailFragment.this, 0);
+                    mListener.onShowFragment(fragment, false);
+                }
+            });
         }
     }
 }

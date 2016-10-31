@@ -41,6 +41,10 @@ import rx.Subscriber;
 
 public class HeroListFragment extends Fragment implements HeroCharacterListener {
 
+    public interface AddCharacterListener {
+        void confirmAddCharacter(Results results);
+    }
+
     public static final int CHARACTER_COUNT_PER_PAGE = 15;
     public static final int CHARACTER_COUNT_PER_ROW = 3;
 
@@ -181,11 +185,16 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener 
     @Override
     public void onCharacterClick(Results results) {
         if (results != null) {
-            Thumbnail thumbnail = results.getThumbnail();
-            String imgUrl;
-            if (thumbnail != null) {
-                imgUrl = generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_PORTRAIT_MEDIUM, thumbnail.getExtension());
+            AddCharacterListener listener;
+            try {
+                listener = (AddCharacterListener) getTargetFragment();
+                if (listener != null) {
+                    listener.confirmAddCharacter(results);
+                }
+            } catch (ClassCastException e) {
+                e.printStackTrace();
             }
+            closePage();
         }
     }
 
@@ -257,9 +266,9 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener 
         String modifiedSince = Constants.MARVEL_QUERY_MODIFIED_SINCE_DATE;
         Subscriber<CharacterInfo> subscriber;
         if (addList) {
-            subscriber = new ProgressSubscriber<CharacterInfo>(onAddCharacterListHandler, mContext, true, true);
+            subscriber = new ProgressSubscriber<>(onAddCharacterListHandler, mContext, true, true);
         } else {
-            subscriber = new ProgressSubscriber<CharacterInfo>(onGetCharacterListHandler, mContext, true, true);
+            subscriber = new ProgressSubscriber<>(onGetCharacterListHandler, mContext, true, true);
         }
         MarvelRestClient.getInstance().getCharacterListApi(subscriber,
                 apiKey, timeStamp, hash,
@@ -330,5 +339,11 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener 
     private void resetCharacterInfo() {
         mCharacterOffset = 0;
         mCharacterInfo = null;
+    }
+
+    public void closePage() {
+        if (mListener != null) {
+            mListener.onFragmentBackPress();
+        }
     }
 }
