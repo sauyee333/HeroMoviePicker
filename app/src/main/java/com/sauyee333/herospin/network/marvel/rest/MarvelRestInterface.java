@@ -16,11 +16,12 @@ public interface MarvelRestInterface {
     Observable<CharacterInfo> getCharacterList(@Query("apikey") String apikey,
                                                @Query("ts") String timeStamp,
                                                @Query("hash") String hash,
-                                               @Query("name") String name,
                                                @Query("nameStartsWith") String nameStartsWith,
+                                               @Query("name") String name,
                                                @Query("orderBy") String orderBy,
                                                @Query("limit") String limit,
-                                               @Query("offset") String offset);
+                                               @Query("offset") String offset,
+                                               @Query("modifiedSince") String modifiedSince);
 
     @GET("characters/{characterId}")
     Observable<CharacterInfo> getCharacterId(@Path("characterId") String characterId,

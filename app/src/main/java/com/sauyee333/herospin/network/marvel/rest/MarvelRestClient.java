@@ -57,9 +57,10 @@ public class MarvelRestClient {
                                     String nameStartsWith,
                                     String orderBy,
                                     String limit,
-                                    String offset) {
+                                    String offset,
+                                    String modifiedSince) {
         Observable observable = rxInterface.getCharacterList(apikey, timeStamp, hash, name,
-                nameStartsWith, orderBy, limit, offset);
+                nameStartsWith, orderBy, limit, offset, modifiedSince);
         setupSubscribe(observable, subscriber);
     }
 

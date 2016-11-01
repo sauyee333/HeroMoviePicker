@@ -6,4 +6,24 @@
     <string name="marvelPrivateKey">40c210605c45ac486386d30cd58d744934e959eb</string>
 
     <string name="imageNotAvailable">image_not_available</string>
+
+    <!-- movie pick page -->
+    <string name="fetchSuperHero">A SuperHero in on the way&#8230;</string>
+    <string name="fetchMovie">A Blockbluster is on the way&#8230;</string>
+    <string name="anyMovie">Any Movie</string>
+    <string name="heroMovie">This Hero\&apos;s Movie</string>
+    <string name="moreHeroes">Click for More Heroes</string>
+    <string name="chosenHeroes">The Chosen One</string>
+    <string name="moviePicker">Superhero Movie Picker</string>
+
+    <!-- movie details page -->
+    <string name="actors">Actors</string>
+    <string name="genre">Genre</string>
+    <string name="language">language</string>
+    <string name="imdbRating">Imdb</string>
+    <string name="year">Year</string>
+    <string name="noMovieTitle">Movie not found</string>
+    <string name="noMovieDescription">It seems the SuperHero has taken a break.</string>
+    <string name="tryAgain">Try other hero instead.</string>
+
 </resources>
