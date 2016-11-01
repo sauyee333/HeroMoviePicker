@@ -8,8 +8,8 @@
     <string name="imageNotAvailable">image_not_available</string>
 
     <!-- movie pick page -->
-    <string name="fetchSuperHero">Fetching SuperHero...</string>
-    <string name="fetchMovie">Fetching movie...</string>
+    <string name="fetchSuperHero">A SuperHero in on the way...</string>
+    <string name="fetchMovie">A Blockbluster is on the way...</string>
 
     <!-- movie details page -->
     <string name="actors">Actors</string>
@@ -19,6 +19,6 @@
     <string name="year">Year</string>
     <string name="noMovieTitle">Movie not found</string>
     <string name="noMovieDescription">It seems the SuperHero has taken a break.</string>
-    <string name="tryAgain">Try one of the options instead.</string>
+    <string name="tryAgain">Try other hero instead.</string>
 
 </resources>

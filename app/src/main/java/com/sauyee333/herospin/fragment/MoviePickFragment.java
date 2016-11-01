@@ -2,27 +2,23 @@ package com.sauyee333.herospin.fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.gson.Gson;
 import com.sauyee333.herospin.R;
 import com.sauyee333.herospin.listener.MainListener;
@@ -61,7 +57,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     ImageView spinWheel;
 
     @Bind(R.id.startSpin)
-    Button startSpin;
+    RelativeLayout startSpin;
 
     @Bind(R.id.heroName)
     TextView heroName;
@@ -107,18 +103,12 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                                 Results results1 = results[0];
                                 Thumbnail thumbnail = results1.getThumbnail();
                                 if (thumbnail != null) {
-                                    String imgUrl = SysUtility.generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_PORTRAIT_MEDIUM, thumbnail.getExtension());
+                                    String imgUrl = SysUtility.generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_LANDSCAPE_LARGE, thumbnail.getExtension());
                                     if (heroImage != null && !TextUtils.isEmpty(imgUrl)) {
                                         mHeroImgUrl = imgUrl;
-                                        Glide.with(mContext).load(imgUrl).asBitmap().centerCrop().into(new BitmapImageViewTarget(heroImage) {
-                                            @Override
-                                            protected void setResource(Bitmap resource) {
-                                                RoundedBitmapDrawable circularBitmapDrawable =
-                                                        RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
-                                                circularBitmapDrawable.setCircular(true);
-                                                heroImage.setImageDrawable(circularBitmapDrawable);
-                                            }
-                                        });
+                                        Glide.with(mContext)
+                                                .load(imgUrl)
+                                                .into(heroImage);
                                     }
                                 }
                                 String heroSearchStr = results1.getName();
@@ -198,10 +188,10 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                     displayErrorMessage(imdbInfo.getError());
                 } else {
                     Bundle bundle = new Bundle();
-                    if(!TextUtils.isEmpty(mHeroImgUrl)) {
+                    if (!TextUtils.isEmpty(mHeroImgUrl)) {
                         bundle.putString(Constants.BUNDLE_STRING_URL, mHeroImgUrl);
                     }
-                    if(heroName!= null) {
+                    if (heroName != null) {
                         bundle.putString(Constants.BUNDLE_STRING_HERO, heroName.getText().toString());
                     }
                     bundle.putString(Constants.BUNDLE_STRING_MOVIE_INFO, new Gson().toJson(imdbInfo));
@@ -254,7 +244,6 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         initGetCharacterTotal();
     }
 
-    @OnClick(R.id.stopSpin)
     public void stopAnim() {
         if (spinWheel != null) {
             spinWheel.clearAnimation();
@@ -277,7 +266,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                 Bundle bundle = new Bundle();
                 Thumbnail thumbnail = results.getThumbnail();
                 if (thumbnail != null) {
-                    String imgUrl = SysUtility.generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_STANDARD_MEDIUM, thumbnail.getExtension());
+                    String imgUrl = SysUtility.generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_LANDSCAPE_LARGE, thumbnail.getExtension());
                     bundle.putString(Constants.BUNDLE_STRING_URL, imgUrl);
                 }
 
@@ -435,11 +424,11 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         }
     }
 
-    private void resetHeroInfo(){
-        if(heroImage != null) {
+    private void resetHeroInfo() {
+        if (heroImage != null) {
             heroImage.setImageResource(android.R.color.transparent);
         }
-        if(heroName != null) {
+        if (heroName != null) {
             heroName.setText("");
         }
     }
@@ -474,15 +463,9 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                     heroName.setText(hero);
                 }
                 if (heroImage != null) {
-                    Glide.with(mContext).load(imgUrl).asBitmap().centerCrop().into(new BitmapImageViewTarget(heroImage) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            RoundedBitmapDrawable circularBitmapDrawable =
-                                    RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
-                            circularBitmapDrawable.setCircular(true);
-                            heroImage.setImageDrawable(circularBitmapDrawable);
-                        }
-                    });
+                    Glide.with(mContext)
+                            .load(imgUrl)
+                            .into(heroImage);
                 }
                 startSpinWheel();
                 showLoadingInfo(mContext.getResources().getString(R.string.fetchMovie));
