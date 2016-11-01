@@ -8,8 +8,13 @@
     <string name="imageNotAvailable">image_not_available</string>
 
     <!-- movie pick page -->
-    <string name="fetchSuperHero">A SuperHero in on the way...</string>
-    <string name="fetchMovie">A Blockbluster is on the way...</string>
+    <string name="fetchSuperHero">A SuperHero in on the way&#8230;</string>
+    <string name="fetchMovie">A Blockbluster is on the way&#8230;</string>
+    <string name="anyMovie">Any Movie</string>
+    <string name="heroMovie">This Hero\&apos;s Movie</string>
+    <string name="moreHeroes">Click for More Heroes</string>
+    <string name="chosenHeroes">The Chosen One</string>
+    <string name="moviePicker">Superhero Movie Picker</string>
 
     <!-- movie details page -->
     <string name="actors">Actors</string>
