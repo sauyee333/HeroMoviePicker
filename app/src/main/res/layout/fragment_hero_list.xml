@@ -43,11 +43,23 @@
         android:layout_below="@+id/searchContainer"
         android:background="#e1e1e1" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list"
+    <RelativeLayout
+        android:layout_below="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/divider" />
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin_half"/>
+
+        <ListView
+            android:id="@+id/suggestList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
 </RelativeLayout>
 
 
