@@ -193,35 +193,23 @@
             android:visibility="visible">
 
             <RelativeLayout
-                android:id="@+id/btnDiscover"
+                android:id="@+id/startSpinHeroMovie"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1">
 
-                <ImageView
-                    android:id="@+id/imgDiscover"
-                    android:layout_width="30dp"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="2dp"
-                    android:layout_marginLeft="6dp"
-                    android:layout_marginRight="6dp"
-                    android:layout_marginTop="8dp"
-                    android:adjustViewBounds="true" />
-
                 <TextView
-                    android:id="@+id/txtDiscover"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/imgDiscover"
+                    android:layout_centerInParent="true"
                     android:layout_centerHorizontal="true"
                     android:text="@string/heroMovie"
                     android:textColor="@android:color/black"
                     android:textSize="12sp" />
 
                 <View
-                    android:id="@+id/discoverUnderline"
+                    android:id="@+id/heroMovieUnderline"
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
                     android:layout_alignParentTop="true"
@@ -237,35 +225,23 @@
                 android:background="@android:color/darker_gray" />
 
             <RelativeLayout
-                android:id="@+id/startSpin"
+                android:id="@+id/startSpinAnyMovie"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1">
 
-                <ImageView
-                    android:id="@+id/imgProfile"
-                    android:layout_width="30dp"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="2dp"
-                    android:layout_marginLeft="6dp"
-                    android:layout_marginRight="6dp"
-                    android:layout_marginTop="8dp"
-                    android:adjustViewBounds="true" />
-
                 <TextView
-                    android:id="@+id/txtProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/imgProfile"
+                    android:layout_centerInParent="true"
                     android:layout_centerHorizontal="true"
                     android:text="@string/anyMovie"
                     android:textColor="@android:color/black"
                     android:textSize="12sp" />
 
                 <View
-                    android:id="@+id/profileUnderline"
+                    android:id="@+id/anyMovieUnderline"
                     android:layout_width="match_parent"
                     android:layout_height="3dp"
                     android:layout_alignParentTop="true"

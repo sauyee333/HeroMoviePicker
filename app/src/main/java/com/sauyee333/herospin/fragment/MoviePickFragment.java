@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
@@ -56,7 +55,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     @Bind(R.id.spinWheel)
     ImageView spinWheel;
 
-    @Bind(R.id.startSpin)
+    @Bind(R.id.startSpinAnyMovie)
     RelativeLayout startSpin;
 
     @Bind(R.id.heroName)
@@ -70,6 +69,9 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
 
     @Bind(R.id.fetchInfo)
     TextView fetchInfo;
+
+    @Bind(R.id.errorInfo)
+    LinearLayout errorInfo;
 
     private final CustomHandler mHandler = new CustomHandler(this);
     private Activity mActivity;
@@ -235,9 +237,10 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         }
     }
 
-    @OnClick(R.id.startSpin)
+    @OnClick(R.id.startSpinAnyMovie)
     public void startAnim() {
         startSpin.setEnabled(false);
+        hideErrorInfo();
         startSpinWheel();
         showLoadingInfo(mContext.getResources().getString(R.string.fetchSuperHero));
         resetHeroInfo();
@@ -352,7 +355,8 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     private void displayErrorMessage(String msg) {
         stopAnim();
         hideLoadingInfo();
-        Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+        showErrorInfo();
+//        Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
     }
 
     private String getTimeStamp() {
@@ -433,7 +437,6 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         }
     }
 
-
     private void showLoadingInfo(String input) {
         if (!TextUtils.isEmpty(input)) {
             fetchInfo.setText(input);
@@ -446,6 +449,18 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     private void hideLoadingInfo() {
         if (loadingInfo != null) {
             loadingInfo.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void showErrorInfo() {
+        if (errorInfo != null) {
+            errorInfo.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideErrorInfo() {
+        if (errorInfo != null) {
+            errorInfo.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -467,6 +482,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                             .load(imgUrl)
                             .into(heroImage);
                 }
+                hideErrorInfo();
                 startSpinWheel();
                 showLoadingInfo(mContext.getResources().getString(R.string.fetchMovie));
                 getMovieList(hero);
