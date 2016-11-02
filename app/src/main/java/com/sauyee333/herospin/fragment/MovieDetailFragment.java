@@ -160,6 +160,7 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
 
             if (heroName != null) {
                 heroName.setText(hero);
+                heroName.setTag(hero);
             }
             String movieInfo = bundle.getString(Constants.BUNDLE_STRING_MOVIE_INFO);
             mImdbInfo = new Gson().fromJson(movieInfo, ImdbInfo.class);
@@ -225,7 +226,7 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
     @OnClick(R.id.btnSpin)
     public void spinAgain() {
         if (heroName != null) {
-            String hero = heroName.getText().toString();
+            String hero = (String) heroName.getTag();
             if (!TextUtils.isEmpty(hero)) {
                 getMovieList(hero);
             }
@@ -274,10 +275,10 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
     }
 
     private void displayErrorMessage(String msg) {
-        if(movieInfo!= null) {
+        if (movieInfo != null) {
             movieInfo.setVisibility(View.GONE);
         }
-        if(errorInfo!=null){
+        if (errorInfo != null) {
             errorInfo.setVisibility(View.VISIBLE);
         }
         Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
@@ -292,10 +293,10 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
             imdb.setText(imdbInfo.getImdbRating());
             plot.setText(imdbInfo.getPlot());
             title.setText(imdbInfo.getTitle());
-            if(movieInfo!= null) {
+            if (movieInfo != null) {
                 movieInfo.setVisibility(View.VISIBLE);
             }
-            if(errorInfo!=null){
+            if (errorInfo != null) {
                 errorInfo.setVisibility(View.GONE);
             }
             Glide.with(mContext)
@@ -324,10 +325,10 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
                 String hero = bundle.getString(Constants.BUNDLE_STRING_HERO);
                 String imgUrl = bundle.getString(Constants.BUNDLE_STRING_URL);
 
-                if(heroName != null) {
+                if (heroName != null) {
                     heroName.setText(hero);
                 }
-                if(heroImage!= null) {
+                if (heroImage != null) {
                     Glide.with(mContext).load(imgUrl).asBitmap().centerCrop().into(new BitmapImageViewTarget(heroImage) {
                         @Override
                         protected void setResource(Bitmap resource) {
