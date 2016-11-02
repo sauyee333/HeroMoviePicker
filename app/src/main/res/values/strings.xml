@@ -8,8 +8,8 @@
     <string name="imageNotAvailable">image_not_available</string>
 
     <!-- movie pick page -->
-    <string name="fetchSuperHero">A SuperHero in on the way&#8230;</string>
-    <string name="fetchMovie">A Blockbluster is on the way&#8230;</string>
+    <string name="fetchSuperHero">A SuperHero in on the way. Please wait&#8230;</string>
+    <string name="fetchMovie">A Movie is on the way. Please wait&#8230;</string>
     <string name="anyMovie">Random Movie</string>
     <string name="heroMovie">Select Hero</string>
     <string name="moreHeroes">Click for More Heroes</string>
@@ -25,5 +25,6 @@
     <string name="noMovieTitle">Movie not found</string>
     <string name="noMovieDescription">It seems the SuperHero has taken a break.</string>
     <string name="tryAgain">Try other heroes instead.</string>
+    <string name="noMovieTryAgain">No movie for this Hero. Try again.</string>
 
 </resources>

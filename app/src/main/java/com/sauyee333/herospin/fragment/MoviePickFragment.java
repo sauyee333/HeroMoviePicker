@@ -356,7 +356,6 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         stopAnim();
         hideLoadingInfo();
         showErrorInfo();
-//        Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
     }
 
     private String getTimeStamp() {
@@ -448,7 +447,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
 
     private void hideLoadingInfo() {
         if (loadingInfo != null) {
-            loadingInfo.setVisibility(View.INVISIBLE);
+            loadingInfo.setVisibility(View.GONE);
         }
     }
 
@@ -460,7 +459,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
 
     private void hideErrorInfo() {
         if (errorLayout != null) {
-            errorLayout.setVisibility(View.INVISIBLE);
+            errorLayout.setVisibility(View.GONE);
         }
     }
 
