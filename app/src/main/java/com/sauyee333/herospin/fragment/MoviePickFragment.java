@@ -55,8 +55,8 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     @Bind(R.id.spinWheel)
     ImageView spinWheel;
 
-    @Bind(R.id.startSpinAnyMovie)
-    RelativeLayout startSpin;
+    @Bind(R.id.randomMovieSpin)
+    RelativeLayout randomMovieSpin;
 
     @Bind(R.id.heroName)
     TextView heroName;
@@ -70,8 +70,8 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     @Bind(R.id.fetchInfo)
     TextView fetchInfo;
 
-    @Bind(R.id.errorInfo)
-    LinearLayout errorInfo;
+    @Bind(R.id.errorLayout)
+    LinearLayout errorLayout;
 
     private final CustomHandler mHandler = new CustomHandler(this);
     private Activity mActivity;
@@ -237,9 +237,9 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         }
     }
 
-    @OnClick(R.id.startSpinAnyMovie)
+    @OnClick(R.id.randomMovieSpin)
     public void startAnim() {
-        startSpin.setEnabled(false);
+        randomMovieSpin.setEnabled(false);
         hideErrorInfo();
         startSpinWheel();
         showLoadingInfo(mContext.getResources().getString(R.string.fetchSuperHero));
@@ -253,7 +253,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
             spinWheel.animate().cancel();
         }
         hideLoadingInfo();
-        startSpin.setEnabled(true);
+        randomMovieSpin.setEnabled(true);
     }
 
     @OnClick(R.id.btnCharacter)
@@ -453,14 +453,14 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     }
 
     private void showErrorInfo() {
-        if (errorInfo != null) {
-            errorInfo.setVisibility(View.VISIBLE);
+        if (errorLayout != null) {
+            errorLayout.setVisibility(View.VISIBLE);
         }
     }
 
     private void hideErrorInfo() {
-        if (errorInfo != null) {
-            errorInfo.setVisibility(View.INVISIBLE);
+        if (errorLayout != null) {
+            errorLayout.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -471,8 +471,8 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                 String hero = bundle.getString(Constants.BUNDLE_STRING_HERO);
                 String imgUrl = bundle.getString(Constants.BUNDLE_STRING_URL);
 
-                if (startSpin != null) {
-                    startSpin.setEnabled(false);
+                if (randomMovieSpin != null) {
+                    randomMovieSpin.setEnabled(false);
                 }
                 if (heroName != null) {
                     heroName.setText(hero);
