@@ -217,6 +217,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         mActivity = getActivity();
         mContext = getContext();
         setupSpinAnimation();
+        setupUI();
 
 //        getCharacterId("1011334");
 //        getMovieList("Batman");
@@ -286,6 +287,10 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
             msg.setData(bundle);
         }
         mHandler.sendMessage(msg);
+    }
+
+    private void setupUI(){
+        showLoadingInfo(mContext.getResources().getString(R.string.fetchIntro));
     }
 
     private void setupSpinAnimation() {
