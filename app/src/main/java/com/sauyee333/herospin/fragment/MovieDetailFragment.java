@@ -327,6 +327,7 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
 
                 if (heroName != null) {
                     heroName.setText(hero);
+                    heroName.setTag(hero);
                 }
                 if (heroImage != null) {
                     Glide.with(mContext).load(imgUrl).asBitmap().centerCrop().into(new BitmapImageViewTarget(heroImage) {

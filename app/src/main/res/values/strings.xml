@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HeroSpin</string>
+    <string name="app_name">Hero Spin</string>
 
     <!-- marvel keys -->
     <string name="marvelPublicKey">67048a9b884af212b62f905ad953d5bc</string>
@@ -8,14 +8,13 @@
     <string name="imageNotAvailable">image_not_available</string>
 
     <!-- movie pick page -->
-    <string name="fetchIntro">No idea which Superhero Movie to watch? Choose option below.</string>
+    <string name="fetchIntro">Not sure which Superhero Movie to watch? Choose an option below.</string>
     <string name="chooseOption">Choose one of the two options to start.</string>
     <string name="fetchSuperHero">A SuperHero in on the way. Please wait&#8230;</string>
-    <string name="fetchMovie">A Movie is on the way. Please wait&#8230;</string>
+    <string name="fetchMovie">A Movie is coming. Please wait&#8230;</string>
     <string name="anyMovie">Random Movie</string>
-    <string name="heroMovie">Choose Hero</string>
+    <string name="chooseHero">Select Hero</string>
     <string name="moreHeroes">Click for More Heroes</string>
-    <string name="chosenHeroes">The Chosen One</string>
     <string name="moviePicker">Superhero Movie Spin</string>
 
     <!-- movie details page -->
@@ -25,8 +24,15 @@
     <string name="imdbRating">Imdb</string>
     <string name="year">Year</string>
     <string name="noMovieTitle">Movie not found</string>
-    <string name="noMovieDescription">It seems the SuperHero has taken a break.</string>
+    <string name="noMovieDescription">It seems the SuperHero is taking a break.</string>
     <string name="tryAgain">Try other heroes instead.</string>
     <string name="noMovieTryAgain">Sorry. No movie found for this Hero.</string>
+
+    <!-- hero list page -->
+    <string name="cancel">Cancel</string>
+    <string name="searchHeroes">Search heroes</string>
+
+    <!-- hero list page -->
+    <string name="connectionError">Connection Error. Please check your network.</string>
 
 </resources>

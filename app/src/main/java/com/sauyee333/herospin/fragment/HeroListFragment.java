@@ -44,6 +44,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.Subscriber;
 
 /**
@@ -68,6 +69,9 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener,
 
     @Bind(R.id.suggestList)
     ListView mSuggestListView;
+
+    @Bind(R.id.btnCancel)
+    TextView btnCancel;
 
     private Context mContext;
     private MainListener mListener;
@@ -250,6 +254,24 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener,
         }
     }
 
+    @OnClick(R.id.btnCancel)
+    public void cancelSearchHint() {
+        if (mRecyclerListView.getVisibility() == View.VISIBLE) {
+            inputSearch.setText("");
+        } else {
+            mSuggestListView.setVisibility(View.GONE);
+            mRecyclerListView.setVisibility(View.VISIBLE);
+            mHintAdapter.clear();
+        }
+    }
+
+    @OnClick(R.id.btnUp)
+    public void closePage() {
+        if (mListener != null) {
+            mListener.onFragmentBackPress();
+        }
+    }
+
     private void setupListConfig() {
         mRecyclerListView.setHasFixedSize(true);
 
@@ -395,70 +417,73 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener,
         mCharacterInfo = null;
     }
 
-    public void closePage() {
-        if (mListener != null) {
-            mListener.onFragmentBackPress();
-        }
-    }
-
     private String getSearchEditText() {
         return (inputSearch != null) ? inputSearch.getText().toString() : "";
     }
 
     private void setupSuggestList() {
-        mHintAdapter = new SearchHintAdapter(mContext);
-        mSuggestListView.setAdapter(mHintAdapter);
-        mSuggestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SearchHint hint = (SearchHint) parent.getItemAtPosition(position);
-                if (hint != null) {
-                    onCharacterClick(hint.getResults());
+        if (mSuggestListView != null) {
+            mHintAdapter = new SearchHintAdapter(mContext);
+            mSuggestListView.setAdapter(mHintAdapter);
+            mSuggestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    SearchHint hint = (SearchHint) parent.getItemAtPosition(position);
+                    if (hint != null) {
+                        onCharacterClick(hint.getResults());
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void setupSearchInput() {
-        inputSearch.requestFocus();
-        inputSearch.addTextChangedListener(this);
+        if (inputSearch != null) {
+            inputSearch.requestFocus();
+            inputSearch.addTextChangedListener(this);
 
-        inputSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                boolean handled = false;
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    String searchString = getSearchEditText();
+            inputSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    boolean handled = false;
+                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                        String searchString = getSearchEditText();
 
-                    if (!searchString.isEmpty()) {
-                        getCharacterList(SEARCH_HINT_COUNT_PER_PAGE, 0, false, searchString);
+                        if (!searchString.isEmpty()) {
+                            getCharacterList(SEARCH_HINT_COUNT_PER_PAGE, 0, false, searchString);
+                        }
+                        handled = true;
                     }
-                    handled = true;
+                    return handled;
                 }
-                return handled;
-            }
-        });
+            });
 
-        inputSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-            }
-        });
+            inputSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            });
+        }
     }
 
     private void showSearchSuggestList(Results[] results) {
         if (isAdded() && !isRemoving()) {
             if (results != null && results.length > 0) {
-                mRecyclerListView.setVisibility(View.GONE);
-                mHintAdapter.clear();
-                for (int i = 0; i < results.length; i++) {
-                    Results results1 = results[i];
-                    mHintAdapter.add(new SearchHint(results1), results1.getName(), mContext);
+                if (mRecyclerListView != null) {
+                    mRecyclerListView.setVisibility(View.GONE);
                 }
-                mSuggestListView.setAdapter(mHintAdapter);
-                mSuggestListView.setVisibility(View.VISIBLE);
+
+                if (mHintAdapter != null && mSuggestListView != null) {
+                    mHintAdapter.clear();
+                    for (int i = 0; i < results.length; i++) {
+                        Results results1 = results[i];
+                        mHintAdapter.add(new SearchHint(results1), results1.getName(), mContext);
+                    }
+                    mSuggestListView.setAdapter(mHintAdapter);
+                    mSuggestListView.setVisibility(View.VISIBLE);
+                }
             }
         }
     }
