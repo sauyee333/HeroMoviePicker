@@ -73,6 +73,9 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     @Bind(R.id.errorLayout)
     LinearLayout errorLayout;
 
+    @Bind(R.id.errorMessage)
+    TextView errorMessage;
+
     private final CustomHandler mHandler = new CustomHandler(this);
     private Activity mActivity;
     private Context mContext;
@@ -289,7 +292,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         mHandler.sendMessage(msg);
     }
 
-    private void setupUI(){
+    private void setupUI() {
         showLoadingInfo(mContext.getResources().getString(R.string.fetchIntro));
     }
 
@@ -298,17 +301,14 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-//                _Debug("anim start");
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-//                _Debug("anim end");
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-//                _Debug("anim repeat");
             }
         });
     }
@@ -360,7 +360,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     private void displayErrorMessage(String msg) {
         stopAnim();
         hideLoadingInfo();
-        showErrorInfo();
+        showErrorInfo(msg);
     }
 
     private String getTimeStamp() {
@@ -456,9 +456,12 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         }
     }
 
-    private void showErrorInfo() {
-        if (errorLayout != null) {
-            errorLayout.setVisibility(View.VISIBLE);
+    private void showErrorInfo(String msg) {
+        if(!TextUtils.isEmpty(msg) && errorMessage != null) {
+            errorMessage.setText(msg);
+            if (errorLayout != null) {
+                errorLayout.setVisibility(View.VISIBLE);
+            }
         }
     }
 
