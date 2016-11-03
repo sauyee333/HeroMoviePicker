@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
@@ -284,6 +283,7 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
             if (!TextUtils.isEmpty(posterUrl) && !posterUrl.equals("N/A")) {
                 Glide.with(mContext)
                         .load(posterUrl)
+                        .error(R.drawable.landscape_medium)
                         .into(poster);
             } else {
                 Glide.with(mContext)
@@ -295,8 +295,8 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
 
     private void loadHeroImage(String imgUrl) {
         if (heroImage != null) {
-            if (!TextUtils.isEmpty(imgUrl)) {
-                Glide.with(mContext).load(imgUrl).asBitmap().centerCrop().into(new BitmapImageViewTarget(heroImage) {
+            if (!TextUtils.isEmpty(imgUrl) && !imgUrl.equals("N/A")) {
+                Glide.with(mContext).load(imgUrl).asBitmap().centerCrop().error(R.drawable.splash_image).into(new BitmapImageViewTarget(heroImage) {
                     @Override
                     protected void setResource(Bitmap resource) {
                         RoundedBitmapDrawable circularBitmapDrawable =
@@ -306,7 +306,9 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
                     }
                 });
             } else {
-                heroImage.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.splash_image));
+                Glide.with(mContext)
+                        .load(R.drawable.splash_image)
+                        .into(heroImage);
             }
         }
     }

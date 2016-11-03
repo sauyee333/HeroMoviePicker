@@ -111,9 +111,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                                     String imgUrl = SysUtility.generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_LANDSCAPE_LARGE, thumbnail.getExtension());
                                     if (heroImage != null && !TextUtils.isEmpty(imgUrl)) {
                                         mHeroImgUrl = imgUrl;
-                                        Glide.with(mContext)
-                                                .load(imgUrl)
-                                                .into(heroImage);
+                                        loadHeroImage(imgUrl);
                                     }
                                 }
                                 String heroSearchStr = results1.getName();
@@ -477,17 +475,28 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                 if (heroName != null) {
                     heroName.setText(hero);
                 }
-                if (heroImage != null) {
-                    Glide.with(mContext)
-                            .load(imgUrl)
-                            .into(heroImage);
-                }
+                loadHeroImage(imgUrl);
                 hideErrorInfo();
                 startSpinWheel();
                 showLoadingInfo(mContext.getResources().getString(R.string.fetchMovie));
                 getMovieList(hero);
             }
             break;
+        }
+    }
+
+    private void loadHeroImage(String imgUrl) {
+        if (heroImage != null) {
+            if (!TextUtils.isEmpty(imgUrl) && !imgUrl.equals("N/A")) {
+                Glide.with(mContext)
+                        .load(imgUrl)
+                        .error(R.drawable.landscape_medium)
+                        .into(heroImage);
+            } else {
+                Glide.with(mContext)
+                        .load(R.drawable.landscape_medium)
+                        .into(heroImage);
+            }
         }
     }
 
