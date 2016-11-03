@@ -11,13 +11,18 @@ An Android mobile app that helps to pick a SuperHero Movie.
 1.0
 
 ### Screenshots
-<img src="https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/mainScreen.png" style="float: left; height: 15em; margin-right: 1%; margin-bottom: 0.5em;">
-<img src="https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/mainErrorScreen.png" style="float: right; height: 15em; margin-right: 1%; margin-bottom: 0.5em;">
-<br>
 
-<img src="https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/heroListScreen.png" style="float: left; height: 15em; margin-right: 1%; margin-bottom: 0.5em;">
-<img src="https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/heroSearchScreen.png" style="float: right; height: 15em; margin-right: 1%; margin-bottom: 0.5em;">
-
-<br>
-
-<img src="https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/heroListScreen.png?raw=true" style="float: left; height: 15em; margin-right: 1%; margin-bottom: 0.5em;">
+<div class="image123">
+    <div style="float:left;margin-right:5px;">
+        <img src="HeroMoviePicker/screenshot/mainScreen.png" height="200" width="200"  />
+        <p style="text-align:center;">Main Screen</p>
+    </div>
+    <div style="float:left;margin-right:5px;">
+        <img class="middle-img" src="HeroMoviePicker/screenshot/heroListScreen.png" height="200" width="200" />
+        <p style="text-align:center;">This is image 2</p>
+    </div>
+    <div style="float:left;margin-right:5px;">
+        <img src="HeroMoviePicker/screenshot/movieDetailScreen.png" height="200" width="200" />
+        <p style="text-align:center;">This is image 3</p>
+    </div>
+</div>
