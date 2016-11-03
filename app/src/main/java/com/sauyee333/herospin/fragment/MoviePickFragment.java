@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
@@ -56,8 +55,8 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     @Bind(R.id.spinWheel)
     ImageView spinWheel;
 
-    @Bind(R.id.startSpin)
-    RelativeLayout startSpin;
+    @Bind(R.id.randomMovieSpin)
+    RelativeLayout randomMovieSpin;
 
     @Bind(R.id.heroName)
     TextView heroName;
@@ -70,6 +69,12 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
 
     @Bind(R.id.fetchInfo)
     TextView fetchInfo;
+
+    @Bind(R.id.errorLayout)
+    LinearLayout errorLayout;
+
+    @Bind(R.id.errorMessage)
+    TextView errorMessage;
 
     private final CustomHandler mHandler = new CustomHandler(this);
     private Activity mActivity;
@@ -153,7 +158,11 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                 String response = movieInfo.getResponse();
                 if (!TextUtils.isEmpty(response)) {
                     if (response.equals("False")) {
-                        displayErrorMessage(movieInfo.getError());
+                        String msg = movieInfo.getError();
+                        if(msg.contains(mContext.getResources().getString(R.string.movieNotFound))){
+                            msg = mContext.getResources().getString(R.string.noMovieTryAgain);
+                        }
+                        displayErrorMessage(msg);
                     } else {
                         String total = movieInfo.getTotalResults();
                         int totalInt = Integer.parseInt(total);
@@ -215,6 +224,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         mActivity = getActivity();
         mContext = getContext();
         setupSpinAnimation();
+        setupUI();
 
 //        getCharacterId("1011334");
 //        getMovieList("Batman");
@@ -235,9 +245,10 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         }
     }
 
-    @OnClick(R.id.startSpin)
+    @OnClick(R.id.randomMovieSpin)
     public void startAnim() {
-        startSpin.setEnabled(false);
+        randomMovieSpin.setEnabled(false);
+        hideErrorInfo();
         startSpinWheel();
         showLoadingInfo(mContext.getResources().getString(R.string.fetchSuperHero));
         resetHeroInfo();
@@ -250,7 +261,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
             spinWheel.animate().cancel();
         }
         hideLoadingInfo();
-        startSpin.setEnabled(true);
+        randomMovieSpin.setEnabled(true);
     }
 
     @OnClick(R.id.btnCharacter)
@@ -285,22 +296,23 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         mHandler.sendMessage(msg);
     }
 
+    private void setupUI() {
+        showLoadingInfo(mContext.getResources().getString(R.string.fetchIntro));
+    }
+
     private void setupSpinAnimation() {
         animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_rotate);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-//                _Debug("anim start");
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-//                _Debug("anim end");
             }
 
             @Override
             public void onAnimationRepeat(Animation animation) {
-//                _Debug("anim repeat");
             }
         });
     }
@@ -352,7 +364,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     private void displayErrorMessage(String msg) {
         stopAnim();
         hideLoadingInfo();
-        Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+        showErrorInfo(msg);
     }
 
     private String getTimeStamp() {
@@ -433,7 +445,6 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         }
     }
 
-
     private void showLoadingInfo(String input) {
         if (!TextUtils.isEmpty(input)) {
             fetchInfo.setText(input);
@@ -445,7 +456,22 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
 
     private void hideLoadingInfo() {
         if (loadingInfo != null) {
-            loadingInfo.setVisibility(View.INVISIBLE);
+            loadingInfo.setVisibility(View.GONE);
+        }
+    }
+
+    private void showErrorInfo(String msg) {
+        if(!TextUtils.isEmpty(msg) && errorMessage != null) {
+            errorMessage.setText(msg);
+            if (errorLayout != null) {
+                errorLayout.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    private void hideErrorInfo() {
+        if (errorLayout != null) {
+            errorLayout.setVisibility(View.GONE);
         }
     }
 
@@ -456,8 +482,8 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                 String hero = bundle.getString(Constants.BUNDLE_STRING_HERO);
                 String imgUrl = bundle.getString(Constants.BUNDLE_STRING_URL);
 
-                if (startSpin != null) {
-                    startSpin.setEnabled(false);
+                if (randomMovieSpin != null) {
+                    randomMovieSpin.setEnabled(false);
                 }
                 if (heroName != null) {
                     heroName.setText(hero);
@@ -467,6 +493,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                             .load(imgUrl)
                             .into(heroImage);
                 }
+                hideErrorInfo();
                 startSpinWheel();
                 showLoadingInfo(mContext.getResources().getString(R.string.fetchMovie));
                 getMovieList(hero);

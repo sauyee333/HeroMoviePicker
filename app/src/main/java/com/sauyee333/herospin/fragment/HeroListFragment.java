@@ -6,16 +6,27 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sauyee333.herospin.R;
 import com.sauyee333.herospin.adapter.HeroListAdapter;
+import com.sauyee333.herospin.adapter.SearchHintAdapter;
 import com.sauyee333.herospin.listener.HeroCharacterListener;
 import com.sauyee333.herospin.listener.MainListener;
+import com.sauyee333.herospin.model.SearchHint;
 import com.sauyee333.herospin.network.ProgressSubscriber;
 import com.sauyee333.herospin.network.SubscribeOnResponseListener;
 import com.sauyee333.herospin.network.marvel.model.characterList.CharacterInfo;
@@ -33,13 +44,14 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.Subscriber;
 
 /**
  * Created by sauyee on 29/10/16.
  */
 
-public class HeroListFragment extends Fragment implements HeroCharacterListener {
+public class HeroListFragment extends Fragment implements HeroCharacterListener, TextWatcher {
 
     public interface AddCharacterListener {
         void confirmAddCharacter(Results results);
@@ -47,12 +59,19 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener 
 
     public static final int CHARACTER_COUNT_PER_PAGE = 15;
     public static final int CHARACTER_COUNT_PER_ROW = 3;
+    public static final int SEARCH_HINT_COUNT_PER_PAGE = 6;
 
     @Bind(R.id.list)
     RecyclerView mRecyclerListView;
 
-//    @Bind(R.id.inputSearch)
-//    EditText inputSearch;
+    @Bind(R.id.inputSearch)
+    EditText inputSearch;
+
+    @Bind(R.id.suggestList)
+    ListView mSuggestListView;
+
+    @Bind(R.id.btnCancel)
+    TextView btnCancel;
 
     private Context mContext;
     private MainListener mListener;
@@ -65,6 +84,8 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener 
     private CharacterInfo mCharacterInfo;
     private int mFetchPage = 0;
     private List<Results> mResultsList;
+    private SearchHintAdapter mHintAdapter;
+
 
     private SubscribeOnResponseListener onGetCharacterListHandler = new SubscribeOnResponseListener<CharacterInfo>() {
         @Override
@@ -147,6 +168,23 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener 
         }
     };
 
+    private SubscribeOnResponseListener onSearchCharacterListHandler = new SubscribeOnResponseListener<CharacterInfo>() {
+        @Override
+        public void onNext(CharacterInfo characterInfo) {
+            if (characterInfo != null) {
+                Data data = characterInfo.getData();
+                if (data != null) {
+                    showSearchSuggestList(data.getResults());
+                }
+            }
+        }
+
+        @Override
+        public void onError(String errorMsg) {
+            displayErrorMessage(errorMsg);
+        }
+    };
+
     private SubscribeOnResponseListener onGetCharacterIdHandler = new SubscribeOnResponseListener<CharacterInfo>() {
         @Override
         public void onNext(CharacterInfo characterInfo) {
@@ -165,9 +203,11 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener 
         mContext = getContext();
 
         setupListConfig();
+        setupSearchInput();
+        setupSuggestList();
         setupScrollListener();
 
-        getCharacterList(CHARACTER_COUNT_PER_PAGE, mCharacterOffset, false);
+        getCharacterList(CHARACTER_COUNT_PER_PAGE, mCharacterOffset, false, null);
         return view;
     }
 
@@ -195,6 +235,40 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener 
                 e.printStackTrace();
             }
             closePage();
+        }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        String search = getSearchEditText();
+        if (!TextUtils.isEmpty(search)) {
+            getCharacterList(SEARCH_HINT_COUNT_PER_PAGE, 0, false, search);
+        }
+    }
+
+    @OnClick(R.id.btnCancel)
+    public void cancelSearchHint() {
+        if (mRecyclerListView.getVisibility() == View.VISIBLE) {
+            inputSearch.setText("");
+        } else {
+            mSuggestListView.setVisibility(View.GONE);
+            mRecyclerListView.setVisibility(View.VISIBLE);
+            mHintAdapter.clear();
+        }
+    }
+
+    @OnClick(R.id.btnUp)
+    public void closePage() {
+        if (mListener != null) {
+            mListener.onFragmentBackPress();
         }
     }
 
@@ -240,7 +314,7 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener 
                     if (newPage > mFetchPage && newPage <= totalPage) {
                         int newOffset = mCharacterOffset + mCharacterLimit;
 //                        _Debug("newoffset: " + newOffset);
-                        getCharacterList(CHARACTER_COUNT_PER_PAGE, newOffset, true);
+                        getCharacterList(CHARACTER_COUNT_PER_PAGE, newOffset, true, null);
                         mFetchPage = newPage;
 //                        _Debug("nneed fetch more");
                     }
@@ -256,23 +330,25 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener 
         }
     }
 
-    private void getCharacterList(int limit, int offset, boolean addList) {
+    private void getCharacterList(int limit, int offset, boolean addList, String nameStartsWith) {
         String apiKey = getResources().getString(R.string.marvelPublicKey);
         String timeStamp = getTimeStamp();
         String hash = generateHash(timeStamp, getResources().getString(R.string.marvelPrivateKey), apiKey);
-        String modified = Constants.MARVEL_QUERY_ORDER_MODIFIED;
+        String orderBy = Constants.MARVEL_QUERY_ORDER_MODIFIED;
         String limitStr = (limit <= 0) ? null : Integer.toString(limit);
         String offsetStr = (limit <= 0 && offset <= 0) ? null : Integer.toString(offset);
         String modifiedSince = Constants.MARVEL_QUERY_MODIFIED_SINCE_DATE;
         Subscriber<CharacterInfo> subscriber;
         if (addList) {
             subscriber = new ProgressSubscriber<>(onAddCharacterListHandler, mContext, true, true);
+        } else if (!TextUtils.isEmpty(nameStartsWith)) {
+            subscriber = new ProgressSubscriber<>(onSearchCharacterListHandler, mContext, false, false);
         } else {
             subscriber = new ProgressSubscriber<>(onGetCharacterListHandler, mContext, true, true);
         }
         MarvelRestClient.getInstance().getCharacterListApi(subscriber,
                 apiKey, timeStamp, hash,
-                null, null, modified,
+                null, nameStartsWith, orderBy,
                 limitStr, offsetStr, modifiedSince);
     }
 
@@ -341,9 +417,74 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener 
         mCharacterInfo = null;
     }
 
-    public void closePage() {
-        if (mListener != null) {
-            mListener.onFragmentBackPress();
+    private String getSearchEditText() {
+        return (inputSearch != null) ? inputSearch.getText().toString() : "";
+    }
+
+    private void setupSuggestList() {
+        if (mSuggestListView != null) {
+            mHintAdapter = new SearchHintAdapter(mContext);
+            mSuggestListView.setAdapter(mHintAdapter);
+            mSuggestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    SearchHint hint = (SearchHint) parent.getItemAtPosition(position);
+                    if (hint != null) {
+                        onCharacterClick(hint.getResults());
+                    }
+                }
+            });
+        }
+    }
+
+    private void setupSearchInput() {
+        if (inputSearch != null) {
+            inputSearch.requestFocus();
+            inputSearch.addTextChangedListener(this);
+
+            inputSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    boolean handled = false;
+                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                        String searchString = getSearchEditText();
+
+                        if (!searchString.isEmpty()) {
+                            getCharacterList(SEARCH_HINT_COUNT_PER_PAGE, 0, false, searchString);
+                        }
+                        handled = true;
+                    }
+                    return handled;
+                }
+            });
+
+            inputSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            });
+        }
+    }
+
+    private void showSearchSuggestList(Results[] results) {
+        if (isAdded() && !isRemoving()) {
+            if (results != null && results.length > 0) {
+                if (mRecyclerListView != null) {
+                    mRecyclerListView.setVisibility(View.GONE);
+                }
+
+                if (mHintAdapter != null && mSuggestListView != null) {
+                    mHintAdapter.clear();
+                    for (int i = 0; i < results.length; i++) {
+                        Results results1 = results[i];
+                        mHintAdapter.add(new SearchHint(results1), results1.getName(), mContext);
+                    }
+                    mSuggestListView.setAdapter(mHintAdapter);
+                    mSuggestListView.setVisibility(View.VISIBLE);
+                }
+            }
         }
     }
 }

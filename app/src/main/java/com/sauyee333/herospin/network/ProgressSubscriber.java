@@ -50,7 +50,7 @@ public class ProgressSubscriber<T> extends Subscriber<T> implements ProgressChan
     public void onError(Throwable throwable) {
         throwable.printStackTrace();
         dismissProgressDialog();
-        String errorMsg = ErrorUtility.parseApiError(throwable);
+        String errorMsg = ErrorUtility.parseApiError(mContext, throwable);
         if (mSubscribeOnNextListener != null) {
             mSubscribeOnNextListener.onError(errorMsg);
         }

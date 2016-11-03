@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import com.sauyee333.herospin.R;
+import com.sauyee333.herospin.fragment.HeroListFragment;
 import com.sauyee333.herospin.fragment.MovieDetailFragment;
 import com.sauyee333.herospin.fragment.MoviePickFragment;
 import com.sauyee333.herospin.listener.MainListener;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements MainListener {
         setContentView(R.layout.activity_main);
         loadMoviePickFragment();
 //        loadMovieDetailFragment();
+//        loadHeroListFragment();
     }
 
     @Override
@@ -37,6 +39,11 @@ public class MainActivity extends AppCompatActivity implements MainListener {
 
     private void loadMovieDetailFragment() {
         Fragment fragment = new MovieDetailFragment();
+        showFragment(fragment, false);
+    }
+
+    private void loadHeroListFragment() {
+        Fragment fragment = new HeroListFragment();
         showFragment(fragment, false);
     }
 
