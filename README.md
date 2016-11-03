@@ -14,15 +14,15 @@ An Android mobile app that helps to pick a SuperHero Movie.
 
 <div class="image123">
     <div style="float:left;margin-right:5px;">
-        <img src="HeroMoviePicker/screenshot/mainScreen.png" height="200" width="200"  />
+        <img src="https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/mainScreen.png" height="200" width="200"  />
         <p style="text-align:center;">Main Screen</p>
     </div>
     <div style="float:left;margin-right:5px;">
-        <img class="middle-img" src="HeroMoviePicker/screenshot/heroListScreen.png" height="200" width="200" />
-        <p style="text-align:center;">This is image 2</p>
+        <img class="middle-img" src="https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/heroListScreen.png" height="200" width="200" />
+        <p style="text-align:center;">Hero List Screen</p>
     </div>
     <div style="float:left;margin-right:5px;">
-        <img src="HeroMoviePicker/screenshot/movieDetailScreen.png" height="200" width="200" />
-        <p style="text-align:center;">This is image 3</p>
+        <img src="https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/movieDetailScreen.png" height="200" width="200" />
+        <p style="text-align:center;">Movie Details Screen</p>
     </div>
 </div>
