@@ -32,7 +32,6 @@ import com.sauyee333.herospin.network.SubscribeOnResponseListener;
 import com.sauyee333.herospin.network.marvel.model.characterList.CharacterInfo;
 import com.sauyee333.herospin.network.marvel.model.characterList.Data;
 import com.sauyee333.herospin.network.marvel.model.characterList.Results;
-import com.sauyee333.herospin.network.marvel.model.characterList.Thumbnail;
 import com.sauyee333.herospin.network.marvel.rest.MarvelRestClient;
 import com.sauyee333.herospin.utils.Constants;
 
@@ -81,7 +80,6 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener,
     private int mCharacterListTotal = 0;
     private int mCharacterOffset = 0;
     private int mCharacterLimit = 0;
-    private CharacterInfo mCharacterInfo;
     private int mFetchPage = 0;
     private List<Results> mResultsList;
     private SearchHintAdapter mHintAdapter;
@@ -96,24 +94,10 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener,
                     mCharacterOffset = data.getOffset();
                     mCharacterListTotal = data.getTotal();
                     mCharacterLimit = data.getLimit();
-//                    _Debug("onnext offset: " + mCharacterOffset);
-//                    _Debug("onnext total: " + mCharacterListTotal);
-//                    _Debug("onnext limit: " + mCharacterLimit);
 
                     refreshCurrentFetchPage();
                     Results[] results = data.getResults();
                     if (results != null) {
-                        for (int i = 0; i < results.length; i++) {
-                            Results results1 = results[i];
-                            Thumbnail thumbnail = results1.getThumbnail();
-                            String imgUrl;
-                            if (thumbnail != null) {
-                                imgUrl = generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_PORTRAIT_MEDIUM, thumbnail.getExtension());
-//                                _Debug("imgUrl: " + imgUrl);
-                            }
-//                            _Debug(results1.getName() + " " + results1.getDescription());
-//                            _Debug(results1.getId() + " " + results1.getResourceURI());
-                        }
                         mResultsList = new ArrayList<>(Arrays.asList(results));
                         updateHeroList(mResultsList);
                     }
@@ -136,24 +120,9 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener,
                     mCharacterOffset = data.getOffset();
                     mCharacterListTotal = data.getTotal();
                     mCharacterLimit = data.getLimit();
-//                    _Debug("2. onnext offset: " + mCharacterOffset);
-//                    _Debug("2. onnext total: " + mCharacterListTotal);
-//                    _Debug("2. onnext limit: " + mCharacterLimit);
                     refreshCurrentFetchPage();
                     Results[] results = data.getResults();
                     if (results != null) {
-                        for (int i = 0; i < results.length; i++) {
-                            Results results1 = results[i];
-                            Thumbnail thumbnail = results1.getThumbnail();
-                            String imgUrl;
-                            if (thumbnail != null) {
-                                imgUrl = generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_PORTRAIT_MEDIUM, thumbnail.getExtension());
-//                                _Debug("imgUrl: " + imgUrl);
-                            }
-//                            _Debug(results1.getName() + " " + results1.getDescription());
-//                            _Debug(results1.getId() + " " + results1.getResourceURI());
-                        }
-
                         List<Results> newResults = new ArrayList<>(Arrays.asList(results));
                         mResultsList.addAll(newResults);
                         mAdapter.notifyDataSetChanged();
@@ -256,13 +225,11 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener,
 
     @OnClick(R.id.btnCancel)
     public void cancelSearchHint() {
-        if (mRecyclerListView.getVisibility() == View.VISIBLE) {
-            inputSearch.setText("");
-        } else {
-            mSuggestListView.setVisibility(View.GONE);
-            mRecyclerListView.setVisibility(View.VISIBLE);
-            mHintAdapter.clear();
-        }
+        mSuggestListView.setVisibility(View.GONE);
+        mRecyclerListView.setVisibility(View.VISIBLE);
+        mHintAdapter.clear();
+        inputSearch.setText("");
+        btnCancel.setVisibility(View.INVISIBLE);
     }
 
     @OnClick(R.id.btnUp)
@@ -282,7 +249,6 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener,
 
     private void refreshCurrentFetchPage() {
         mFetchPage = mCharacterOffset / mCharacterLimit;
-//        _Debug("refreshCurrentFetchPage mFetchPage :" + mFetchPage);
     }
 
     private void setupScrollListener() {
@@ -299,24 +265,17 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener,
                 int totalItemCount = mLayoutManager.getItemCount();
                 int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
 
-//                _Debug("\nvisibleItemCount: " + visibleItemCount + " " + firstVisibleItemPosition + " " + totalItemCount);
                 if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount) {
                     int newPage = mCharacterOffset + 1;
                     int totalPage = mCharacterListTotal / mCharacterLimit;
                     int remainItems = mCharacterListTotal % mCharacterLimit;
-//                    _Debug("\ncalc: " + mCharacterListTotal + " " + mCharacterLimit);
-//                    _Debug("total remain: " + totalPage + " " + remainItems);
                     if (remainItems > 0) {
                         totalPage += 1;
-//                        _Debug("total remain: " + totalPage + " " + remainItems);
                     }
-//                    _Debug("new: " + newPage + " " + mFetchPage + " " + totalPage);
                     if (newPage > mFetchPage && newPage <= totalPage) {
                         int newOffset = mCharacterOffset + mCharacterLimit;
-//                        _Debug("newoffset: " + newOffset);
                         getCharacterList(CHARACTER_COUNT_PER_PAGE, newOffset, true, null);
                         mFetchPage = newPage;
-//                        _Debug("nneed fetch more");
                     }
                 }
             }
@@ -340,11 +299,11 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener,
         String modifiedSince = Constants.MARVEL_QUERY_MODIFIED_SINCE_DATE;
         Subscriber<CharacterInfo> subscriber;
         if (addList) {
-            subscriber = new ProgressSubscriber<>(onAddCharacterListHandler, mContext, true, true);
+            subscriber = new ProgressSubscriber<>(onAddCharacterListHandler, mContext, true, false);
         } else if (!TextUtils.isEmpty(nameStartsWith)) {
             subscriber = new ProgressSubscriber<>(onSearchCharacterListHandler, mContext, false, false);
         } else {
-            subscriber = new ProgressSubscriber<>(onGetCharacterListHandler, mContext, true, true);
+            subscriber = new ProgressSubscriber<>(onGetCharacterListHandler, mContext, true, false);
         }
         MarvelRestClient.getInstance().getCharacterListApi(subscriber,
                 apiKey, timeStamp, hash,
@@ -412,11 +371,6 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener,
         return imageUrl;
     }
 
-    private void resetCharacterInfo() {
-        mCharacterOffset = 0;
-        mCharacterInfo = null;
-    }
-
     private String getSearchEditText() {
         return (inputSearch != null) ? inputSearch.getText().toString() : "";
     }
@@ -473,6 +427,10 @@ public class HeroListFragment extends Fragment implements HeroCharacterListener,
             if (results != null && results.length > 0) {
                 if (mRecyclerListView != null) {
                     mRecyclerListView.setVisibility(View.GONE);
+                }
+
+                if (btnCancel != null) {
+                    btnCancel.setVisibility(View.VISIBLE);
                 }
 
                 if (mHintAdapter != null && mSuggestListView != null) {
