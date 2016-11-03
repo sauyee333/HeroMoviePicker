@@ -131,9 +131,6 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
                             if (!TextUtils.isEmpty(imdb)) {
                                 getMovieDetail(imdb);
                             }
-                        } else {
-                            //not found
-//                    search again
                         }
                     }
                 }
@@ -177,10 +174,6 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
                     }
                 });
             }
-        }
-
-        if (mImdbInfo == null) {
-            getMovieDetail("tt1922373");
         }
         return view;
     }

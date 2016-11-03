@@ -124,9 +124,6 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                                 if (!TextUtils.isEmpty(heroSearchStr)) {
                                     getMovieList(heroSearchStr);
                                 }
-                            } else {
-                                //not found
-//                    search again
                             }
                         }
                     }
@@ -159,7 +156,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                 if (!TextUtils.isEmpty(response)) {
                     if (response.equals("False")) {
                         String msg = movieInfo.getError();
-                        if(msg.contains(mContext.getResources().getString(R.string.movieNotFound))){
+                        if (msg.contains(mContext.getResources().getString(R.string.movieNotFound))) {
                             msg = mContext.getResources().getString(R.string.noMovieTryAgain);
                         }
                         displayErrorMessage(msg);
@@ -173,9 +170,6 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                             if (!TextUtils.isEmpty(imdb)) {
                                 getMovieDetail(imdb);
                             }
-                        } else {
-                            //not found
-//                    search again
                         }
                     }
                 }
@@ -225,12 +219,6 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
         mContext = getContext();
         setupSpinAnimation();
         setupUI();
-
-//        getCharacterId("1011334");
-//        getMovieList("Batman");
-//        getMovieDetail("tt1922373");
-
-//        generateHash("1477755055051", getResources().getString(R.string.marvelPrivateKey), getResources().getString(R.string.marvelPublicKey));
         return view;
     }
 
@@ -279,6 +267,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                 if (thumbnail != null) {
                     String imgUrl = SysUtility.generateImageUrl(thumbnail.getPath(), Constants.MARVEL_IMAGE_LANDSCAPE_LARGE, thumbnail.getExtension());
                     bundle.putString(Constants.BUNDLE_STRING_URL, imgUrl);
+                    mHeroImgUrl = imgUrl;
                 }
 
                 bundle.putString(Constants.BUNDLE_STRING_HERO, hero);
@@ -461,7 +450,7 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
     }
 
     private void showErrorInfo(String msg) {
-        if(!TextUtils.isEmpty(msg) && errorMessage != null) {
+        if (!TextUtils.isEmpty(msg) && errorMessage != null) {
             errorMessage.setText(msg);
             if (errorLayout != null) {
                 errorLayout.setVisibility(View.VISIBLE);
