@@ -32,6 +32,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:adjustViewBounds="true"
+                        android:src="@drawable/landscape_medium"
                         android:visibility="visible" />
                 </RelativeLayout>
 
@@ -49,32 +50,15 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="0dp"
-                        android:layout_marginLeft="0dp"
-                        android:layout_marginRight="0dp"
-                        android:layout_marginTop="0dp">
-
-                        <ImageView
-                            android:id="@+id/btnPlayTop"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginBottom="2dp"
-                            android:layout_marginRight="16dp"
-                            android:layout_marginTop="2dp"
-                            android:src="@drawable/ic_spin_small" />
+                        android:background="@color/colorPrimary">
 
                         <TextView
-                            android:id="@+id/title"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_alignParentBottom="true"
-                            android:background="@android:color/black"
-                            android:gravity="center_vertical"
-                            android:paddingLeft="35dp"
-                            android:paddingRight="16dp"
+                            android:gravity="center"
                             android:singleLine="true"
+                            android:text="@string/movieDetails"
                             android:textColor="@android:color/white"
                             android:textSize="18sp" />
                     </RelativeLayout>
@@ -103,8 +87,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:layout_marginTop="32dp"
-                    android:orientation="vertical"
-                    android:tag="sticky">
+                    android:orientation="vertical">
 
                     <LinearLayout
                         android:id="@+id/btnGroup"
@@ -176,7 +159,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/default_margin"
+                        android:layout_marginBottom="30dp"
+                        android:lineSpacingMultiplier="1.4"
+                        android:textColor="@color/darkPrimary"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -370,6 +364,7 @@
             app:fbb_showShadow="true"
             app:layout_anchor="@id/appBarLayout"
             app:layout_anchorGravity="bottom|right|end" />
+
     </android.support.design.widget.CoordinatorLayout>
 
     <LinearLayout
@@ -379,9 +374,10 @@
         android:gravity="center_vertical">
 
         <ImageView
-            android:id="@+id/btnClose"
+            android:id="@+id/btnUp"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:background="@drawable/drawable_round_darker_gray"
             android:src="@drawable/ic_close_white" />
     </LinearLayout>
 </RelativeLayout>

@@ -206,7 +206,7 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
         super.onStop();
     }
 
-    @OnClick(R.id.btnClose)
+    @OnClick(R.id.btnUp)
     public void closePage() {
         if (mListener != null) {
             mListener.onFragmentBackPress();
