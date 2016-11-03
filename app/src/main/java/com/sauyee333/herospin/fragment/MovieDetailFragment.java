@@ -299,9 +299,14 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
             if (errorInfo != null) {
                 errorInfo.setVisibility(View.GONE);
             }
-            Glide.with(mContext)
-                    .load(imdbInfo.getPoster())
-                    .into(poster);
+            String posterUrl = imdbInfo.getPoster();
+            if (!TextUtils.isEmpty(posterUrl) && !posterUrl.equals("N/A")) {
+                Glide.with(mContext)
+                        .load(imdbInfo.getPoster())
+                        .into(poster);
+            } else {
+                poster.setImageResource(R.drawable.landscape_medium);
+            }
         }
     }
 

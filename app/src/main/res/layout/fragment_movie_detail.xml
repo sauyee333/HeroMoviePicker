@@ -28,11 +28,11 @@
 
                     <ImageView
                         android:id="@+id/poster"
+                        android:src="@drawable/landscape_medium"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:adjustViewBounds="true"
-                        android:src="@drawable/landscape_medium"
                         android:visibility="visible" />
                 </RelativeLayout>
 
@@ -86,7 +86,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="40dp"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -94,6 +94,39 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
+                        <RelativeLayout
+                            android:id="@+id/btnHome"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5">
+
+                            <LinearLayout
+                                android:id="@+id/homeImgLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:id="@+id/homeImage"
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:padding="6dp"
+                                    android:src="@drawable/ic_menu_home" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/homeImgLayout"
+                                android:ellipsize="end"
+                                android:gravity="center"
+                                android:maxLength="20"
+                                android:paddingBottom="8dp"
+                                android:paddingTop="8dp"
+                                android:text="@string/startOver"
+                                android:textSize="13sp" />
+                        </RelativeLayout>
 
                         <View
                             android:layout_width="1dp"
@@ -104,51 +137,32 @@
                             android:id="@+id/btnCharacter"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center">
+                            android:layout_weight="0.5">
 
-                            <ImageView
-                                android:id="@+id/heroImage"
-                                android:layout_width="80dp"
-                                android:layout_height="80dp" />
+                            <LinearLayout
+                                android:id="@+id/heroImgLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:id="@+id/heroImage"
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:src="@drawable/splash_image" />
+                            </LinearLayout>
 
                             <TextView
                                 android:id="@+id/heroName"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@+id/heroImage"
+                                android:layout_below="@+id/heroImgLayout"
                                 android:ellipsize="end"
-                                android:maxLength="10"
+                                android:gravity="center"
+                                android:maxLength="20"
                                 android:paddingBottom="8dp"
                                 android:paddingTop="8dp"
-                                android:textSize="13sp" />
-                        </RelativeLayout>
-
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="#e1e1e1" />
-
-                        <RelativeLayout
-                            android:id="@+id/btnHome"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center">
-
-                            <ImageView
-                                android:id="@+id/homeImage"
-                                android:layout_width="60dp"
-                                android:layout_height="60dp"
-                                android:src="@drawable/ic_menu_home" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/homeImage"
-                                android:paddingBottom="8dp"
-                                android:paddingTop="8dp"
-                                android:text="Home"
+                                android:text="@string/selectHero"
                                 android:textSize="13sp" />
                         </RelativeLayout>
                     </LinearLayout>

@@ -13,9 +13,10 @@
     <string name="fetchSuperHero">A SuperHero in on the way. Please wait&#8230;</string>
     <string name="fetchMovie">A Movie is coming. Please wait&#8230;</string>
     <string name="anyMovie">Random Movie</string>
-    <string name="chooseHero">Select Hero</string>
+    <string name="selectHero">Select Hero</string>
     <string name="moreHeroes">Click for More Heroes</string>
     <string name="moviePicker">Superhero Movie Spin</string>
+    <string name="movieNotFound">Movie not found!</string>
 
     <!-- movie details page -->
     <string name="actors">Actors</string>
@@ -28,12 +29,14 @@
     <string name="noMovieDescription">It seems the SuperHero is taking a break.</string>
     <string name="tryAgain">Try other heroes instead.</string>
     <string name="noMovieTryAgain">Sorry. No movie found for this Hero.</string>
+    <string name="startOver">Start Over</string>
 
     <!-- hero list page -->
     <string name="cancel">Cancel</string>
-    <string name="searchHeroes">Search heroes</string>
+    <string name="searchHeroes">Search Hero</string>
 
     <!-- hero list page -->
     <string name="connectionError">Connection Error. Please check your network.</string>
+    <string name="connectionTimeout">Connection Timeout. Please try later.</string>
 
 </resources>

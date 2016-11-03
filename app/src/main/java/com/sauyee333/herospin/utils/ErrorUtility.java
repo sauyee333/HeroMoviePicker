@@ -10,6 +10,7 @@ import com.sauyee333.herospin.network.marvel.model.characterList.MarvelError;
 import com.sauyee333.herospin.network.omdb.model.OmdbError;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import okhttp3.ResponseBody;
@@ -52,7 +53,12 @@ public class ErrorUtility {
             if(context != null) {
                 errorMsg = context.getResources().getString(R.string.connectionError);
             }
+        } else if(throwable instanceof SocketTimeoutException){
+            if(context != null) {
+                errorMsg = context.getResources().getString(R.string.connectionTimeout);
+            }
         }
+
         if (TextUtils.isEmpty(errorMsg)) {
             errorMsg = throwable.toString();
         }

@@ -158,7 +158,11 @@ public class MoviePickFragment extends Fragment implements HeroListFragment.AddC
                 String response = movieInfo.getResponse();
                 if (!TextUtils.isEmpty(response)) {
                     if (response.equals("False")) {
-                        displayErrorMessage(movieInfo.getError());
+                        String msg = movieInfo.getError();
+                        if(msg.contains(mContext.getResources().getString(R.string.movieNotFound))){
+                            msg = mContext.getResources().getString(R.string.noMovieTryAgain);
+                        }
+                        displayErrorMessage(msg);
                     } else {
                         String total = movieInfo.getTotalResults();
                         int totalInt = Integer.parseInt(total);
