@@ -11,6 +11,10 @@ An Android mobile app that helps to pick a SuperHero Movie.
 1.0
 
 ### Screenshots
-| [![MainScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/mainScreen.png)]  | [![HeroListScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/heroListScreen.png)] | [![MovieDetailScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/movieDetailScreen.png)] |
+| ![MainScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/mainScreen.png)  | ![HeroListScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/heroListScreen.png) | ![MovieDetailScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/movieDetailScreen.png) |
 |:---:|:---:|:---:|
 | Main Screen | Hero List Screen | Movie Detail Screen |
+
+| ![SearchScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/heroSearchScreen.png)  | ![MovieErrorScreen](https://github.com/sauyee333/HeroMoviePicker/blob/feature/cleanup/screenshot/mainErrorScreen.png) |
+|:---:|:---:|
+| Search Screen | Movie Error Screen |
