@@ -43,6 +43,6 @@ An Android mobile app that helps to pick a SuperHero Movie.
 
 #### Other Screens
 
-| ![HeroSearchScreen](https://github.com/sauyee333/HeroMoviePicker/blob/feature/cleanup/screenshot/heroSearchScreen.png)  | ![MovieSpinErrorScreen](https://github.com/sauyee333/HeroMoviePicker/blob/feature/cleanup/screenshot/mainErrorScreen.png) | ![MovieDetailErrorScreen](https://github.com/sauyee333/HeroMoviePicker/blob/feature/cleanup/screenshot/movieDetailErrorScreen.png) |
+| ![HeroSearchScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/heroSearchScreen.png)  | ![MovieSpinErrorScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/mainErrorScreen.png) | ![MovieDetailErrorScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/movieDetailErrorScreen.png) |
 |:---:|:---:|:---:|
 | Hero Search Screen | Movie Spin Error Screen | Movie Detail Error Screen |
