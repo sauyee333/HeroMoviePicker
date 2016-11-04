@@ -182,7 +182,7 @@
                         android:layout_margin="@dimen/default_margin"
                         android:layout_marginBottom="30dp"
                         android:lineSpacingMultiplier="1.4"
-                        android:textColor="@color/darkPrimary"
+                        android:textColor="@android:color/black"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -199,14 +199,14 @@
                             android:layout_width="80dp"
                             android:layout_height="wrap_content"
                             android:text="@string/actors"
-                            android:textColor="@color/darkPrimary"
+                            android:textColor="@android:color/black"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/actors"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/darkPrimary" />
+                            android:textColor="@android:color/black" />
                     </LinearLayout>
 
 
@@ -223,14 +223,14 @@
                             android:layout_width="80dp"
                             android:layout_height="wrap_content"
                             android:text="@string/genre"
-                            android:textColor="@color/darkPrimary"
+                            android:textColor="@android:color/black"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/genre"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/darkPrimary" />
+                            android:textColor="@android:color/black" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -246,14 +246,14 @@
                             android:layout_width="80dp"
                             android:layout_height="wrap_content"
                             android:text="@string/language"
-                            android:textColor="@color/darkPrimary"
+                            android:textColor="@android:color/black"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/language"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/darkPrimary" />
+                            android:textColor="@android:color/black" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -269,14 +269,14 @@
                             android:layout_width="80dp"
                             android:layout_height="wrap_content"
                             android:text="@string/year"
-                            android:textColor="@color/darkPrimary"
+                            android:textColor="@android:color/black"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/year"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/darkPrimary" />
+                            android:textColor="@android:color/black" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -292,14 +292,14 @@
                             android:layout_width="80dp"
                             android:layout_height="wrap_content"
                             android:text="@string/imdbRating"
-                            android:textColor="@color/darkPrimary"
+                            android:textColor="@android:color/black"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/imdb"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/darkPrimary" />
+                            android:textColor="@android:color/black" />
                     </LinearLayout>
 
                     <TextView
@@ -309,7 +309,7 @@
                         android:layout_margin="@dimen/default_margin"
                         android:layout_marginBottom="30dp"
                         android:lineSpacingMultiplier="1.4"
-                        android:textColor="@color/darkPrimary"
+                        android:textColor="@android:color/black"
                         android:textSize="15sp" />
                 </LinearLayout>
 
@@ -331,7 +331,7 @@
                         android:lineSpacingMultiplier="1.4"
                         android:text="@string/noMovieTitle"
                         android:textAllCaps="true"
-                        android:textColor="@color/darkPrimary"
+                        android:textColor="@android:color/black"
                         android:textStyle="bold" />
 
                     <TextView
@@ -343,7 +343,7 @@
                         android:layout_marginRight="16dp"
                         android:lineSpacingMultiplier="1.4"
                         android:text="@string/noMovieDescription"
-                        android:textColor="@color/darkPrimary" />
+                        android:textColor="@android:color/black" />
 
                     <TextView
                         android:id="@+id/tryAgain"
@@ -353,7 +353,7 @@
                         android:layout_marginRight="16dp"
                         android:lineSpacingMultiplier="1.4"
                         android:text="@string/tryAgain"
-                        android:textColor="@color/darkPrimary" />
+                        android:textColor="@android:color/black" />
                 </LinearLayout>
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
