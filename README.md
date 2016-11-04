@@ -15,16 +15,23 @@ An Android mobile app that helps to pick a SuperHero Movie.
 
 ## Algorithm
 
-  - Get the total number of characters from Marvel API, sorted by last modified since 2006
-  - Get a random character from Marvel API out of the total characters
-  - Search the movie for this character
-  - From the returned movie list, get the random movie and obtain the movie details 
+### Random Movie
+  1. Get a small list of characters from Marvel API in order to obtain the total characters available
+  2. Get a random character from Marvel API out of the total characters
+  3. Search movies for the chosen character
+  4. From the returned movie list, choose a random movie and obtain the movie details 
+
+### Select Hero
+  1. Show the list of heroes, sorted by last modified
+  2. Allow user to scroll for more, seach by name and select a hero
+  3. Search movies for the chosen character
+  4. From the returned movie list, choose a random movie and obtain the movie details 
 
 
 ## Limitation
 
   - OMDB API does not have genre filter, thus the returned movie may not be a SuperHero movie
-  - For long hero name, the rate of OMDB API returning "No Movie Found" is hight
+  - For long hero string or hero that is created some time back, OMDB API tends to "Movie Not Found"
 
 
 ## Screenshots
