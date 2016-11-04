@@ -14,7 +14,6 @@
     <string name="fetchMovie">A Movie is coming. Please wait&#8230;</string>
     <string name="anyMovie">Random Movie</string>
     <string name="selectHero">Select Hero</string>
-    <string name="moreHeroes">Click for More Heroes</string>
     <string name="moviePicker">Superhero Movie Spin</string>
     <string name="movieNotFound">Movie not found!</string>
 

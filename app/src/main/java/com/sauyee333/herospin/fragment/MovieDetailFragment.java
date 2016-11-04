@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -90,7 +89,7 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
     private Context mContext;
     private MainListener mListener;
 
-    private ImdbInfo mImdbInfo;
+    private ImdbInfo mImdbInfo = null;
 
     private SubscribeOnResponseListener onGetMovieDetailHandler = new SubscribeOnResponseListener<ImdbInfo>() {
         @Override
@@ -131,9 +130,6 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
                             if (!TextUtils.isEmpty(imdb)) {
                                 getMovieDetail(imdb);
                             }
-                        } else {
-                            //not found
-//                    search again
                         }
                     }
                 }
@@ -154,7 +150,7 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
         ButterKnife.bind(this, view);
 
         Bundle bundle = this.getArguments();
-        if (bundle != null) {
+        if (bundle != null && mImdbInfo == null) {
             String hero = bundle.getString(Constants.BUNDLE_STRING_HERO);
             String imgUrl = bundle.getString(Constants.BUNDLE_STRING_URL);
 
@@ -165,22 +161,7 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
             String movieInfo = bundle.getString(Constants.BUNDLE_STRING_MOVIE_INFO);
             mImdbInfo = new Gson().fromJson(movieInfo, ImdbInfo.class);
             updateMovieDetail(mImdbInfo);
-
-            if (heroImage != null) {
-                Glide.with(mContext).load(imgUrl).asBitmap().centerCrop().into(new BitmapImageViewTarget(heroImage) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        heroImage.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
-            }
-        }
-
-        if (mImdbInfo == null) {
-            getMovieDetail("tt1922373");
+            loadHeroImage(imgUrl);
         }
         return view;
     }
@@ -194,16 +175,6 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
             throw new ClassCastException(activity.toString()
                     + " must implement MainListener");
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
     }
 
     @OnClick(R.id.btnUp)
@@ -281,7 +252,7 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
         if (errorInfo != null) {
             errorInfo.setVisibility(View.VISIBLE);
         }
-        Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+        loadMovieImage(null);
     }
 
     private void updateMovieDetail(ImdbInfo imdbInfo) {
@@ -291,21 +262,53 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
             language.setText(imdbInfo.getLanguage());
             year.setText(imdbInfo.getYear());
             imdb.setText(imdbInfo.getImdbRating());
-            plot.setText(imdbInfo.getPlot());
             title.setText(imdbInfo.getTitle());
+
+            String plotInfo = imdbInfo.getPlot();
+            if (!TextUtils.isEmpty(plotInfo) && !plotInfo.equals("N/A")) {
+                plot.setText(plotInfo);
+            }
             if (movieInfo != null) {
                 movieInfo.setVisibility(View.VISIBLE);
             }
             if (errorInfo != null) {
                 errorInfo.setVisibility(View.GONE);
             }
-            String posterUrl = imdbInfo.getPoster();
+            loadMovieImage(imdbInfo.getPoster());
+        }
+    }
+
+    private void loadMovieImage(String posterUrl) {
+        if (poster != null) {
             if (!TextUtils.isEmpty(posterUrl) && !posterUrl.equals("N/A")) {
                 Glide.with(mContext)
-                        .load(imdbInfo.getPoster())
+                        .load(posterUrl)
+                        .error(R.drawable.landscape_medium)
                         .into(poster);
             } else {
-                poster.setImageResource(R.drawable.landscape_medium);
+                Glide.with(mContext)
+                        .load(R.drawable.landscape_medium)
+                        .into(poster);
+            }
+        }
+    }
+
+    private void loadHeroImage(String imgUrl) {
+        if (heroImage != null) {
+            if (!TextUtils.isEmpty(imgUrl) && !imgUrl.equals("N/A")) {
+                Glide.with(mContext).load(imgUrl).asBitmap().centerCrop().error(R.drawable.splash_image).into(new BitmapImageViewTarget(heroImage) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        heroImage.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
+            } else {
+                Glide.with(mContext)
+                        .load(R.drawable.splash_image)
+                        .into(heroImage);
             }
         }
     }
@@ -334,17 +337,7 @@ public class MovieDetailFragment extends Fragment implements HeroListFragment.Ad
                     heroName.setText(hero);
                     heroName.setTag(hero);
                 }
-                if (heroImage != null) {
-                    Glide.with(mContext).load(imgUrl).asBitmap().centerCrop().into(new BitmapImageViewTarget(heroImage) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            RoundedBitmapDrawable circularBitmapDrawable =
-                                    RoundedBitmapDrawableFactory.create(mContext.getResources(), resource);
-                            circularBitmapDrawable.setCircular(true);
-                            heroImage.setImageDrawable(circularBitmapDrawable);
-                        }
-                    });
-                }
+                loadHeroImage(imgUrl);
                 getMovieList(hero);
             }
             break;

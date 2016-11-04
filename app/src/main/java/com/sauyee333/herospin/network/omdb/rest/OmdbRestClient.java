@@ -2,6 +2,7 @@ package com.sauyee333.herospin.network.omdb.rest;
 
 import com.sauyee333.herospin.network.omdb.model.imdb.ImdbInfo;
 import com.sauyee333.herospin.network.omdb.model.searchapi.MovieInfo;
+import com.sauyee333.herospin.utils.Constants;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -24,7 +25,7 @@ public class OmdbRestClient {
 
     private OmdbRestClient() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        interceptor.setLevel(Constants.HTTP_LOG_ENABLED ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
         retrofit = new Retrofit.Builder().baseUrl(BASE_URL)
@@ -51,7 +52,7 @@ public class OmdbRestClient {
     }
 
     public void getMovieListApi(Subscriber<MovieInfo> subscriber,
-                                    String search) {
+                                String search) {
         Observable observable = rxInterface.getMovieList(search);
         setupSubscribe(observable, subscriber);
     }

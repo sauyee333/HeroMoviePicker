@@ -1,6 +1,7 @@
 package com.sauyee333.herospin.network.marvel.rest;
 
 import com.sauyee333.herospin.network.marvel.model.characterList.CharacterInfo;
+import com.sauyee333.herospin.utils.Constants;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -23,7 +24,7 @@ public class MarvelRestClient {
 
     private MarvelRestClient() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        interceptor.setLevel(Constants.HTTP_LOG_ENABLED ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
         retrofit = new Retrofit.Builder().baseUrl(BASE_URL)
