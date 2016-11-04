@@ -7,10 +7,18 @@ An Android mobile app that helps to pick a SuperHero Movie.
   - Select from a list of heroes before searching for a movie
   - View the movie details
  
-### Version
+## Version
 1.0
 
-### Screenshots
-| ![MainScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/mainScreen.png)  | ![HeroListScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/heroListScreen.png) | ![MovieDetailScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/movieDetailScreen.png) |
+## Screenshots
+### Main Screens
+
+| ![MovieSpinScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/mainScreen.png)  | ![HeroListScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/heroListScreen.png) | ![MovieDetailScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/movieDetailScreen.png) |
 |:---:|:---:|:---:|
-| Main Screen | Hero List Screen | Movie Detail Screen |
+| Movie Spin Screen | Hero List Screen | Movie Detail Screen |
+
+### Other Screens
+
+| ![HeroSearchScreen](https://github.com/sauyee333/HeroMoviePicker/blob/feature/cleanup/screenshot/heroSearchScreen.png)  | ![MovieSpinErrorScreen](https://github.com/sauyee333/HeroMoviePicker/blob/feature/cleanup/screenshot/mainErrorScreen.png) | ![MovieDetailErrorScreen](https://github.com/sauyee333/HeroMoviePicker/blob/feature/cleanup/screenshot/movieDetailErrorScreen.png) |
+|:---:|:---:|:---:|
+| Hero Search Screen | Movie Spin Error Screen | Movie Detail Error Screen |
