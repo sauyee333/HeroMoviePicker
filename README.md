@@ -15,13 +15,13 @@ An Android mobile app that helps to pick a SuperHero Movie.
 
 ## Algorithm
 
-### Random Movie
+#### Random Movie
   1. Get a small list of characters from Marvel API in order to obtain the total characters available
   2. Get a random character from Marvel API out of the total characters
   3. Search movies for the chosen character
   4. From the returned movie list, choose a random movie and obtain the movie details 
 
-### Select Hero
+#### Select Hero
   1. Show the list of heroes, sorted by last modified
   2. Allow user to scroll for more, seach by name and select a hero
   3. Search movies for the chosen character
@@ -35,13 +35,13 @@ An Android mobile app that helps to pick a SuperHero Movie.
 
 
 ## Screenshots
-### Main Screens
+#### Main Screens
 
 | ![MovieSpinScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/mainScreen.png)  | ![HeroListScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/heroListScreen.png) | ![MovieDetailScreen](https://github.com/sauyee333/HeroMoviePicker/blob/master/screenshot/movieDetailScreen.png) |
 |:---:|:---:|:---:|
 | Movie Spin Screen | Hero List Screen | Movie Detail Screen |
 
-### Other Screens
+#### Other Screens
 
 | ![HeroSearchScreen](https://github.com/sauyee333/HeroMoviePicker/blob/feature/cleanup/screenshot/heroSearchScreen.png)  | ![MovieSpinErrorScreen](https://github.com/sauyee333/HeroMoviePicker/blob/feature/cleanup/screenshot/mainErrorScreen.png) | ![MovieDetailErrorScreen](https://github.com/sauyee333/HeroMoviePicker/blob/feature/cleanup/screenshot/movieDetailErrorScreen.png) |
 |:---:|:---:|:---:|
